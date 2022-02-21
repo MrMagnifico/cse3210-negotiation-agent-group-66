@@ -1,0 +1,21 @@
+[flake8]
+# Conflicts with formatter
+ignore =
+    E203,
+    W503,
+    D401,
+    W504,
+    D204,
+    E125,
+    E262, # Conflicts with odd type comments
+    D100, D101, D102, D104, D107 # Missing docstrings
+
+max-line-length = 89
+max-complexity = 18
+
+# Select the formatter used to display errors to the user.
+format = default
+count = True
+#show-source = True
+#statistics = True
+doctests = True

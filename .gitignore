@@ -1,0 +1,8 @@
+# Directories
+__pycache__
+dist
+*.egg-info
+venv
+
+# Files
+*.log
