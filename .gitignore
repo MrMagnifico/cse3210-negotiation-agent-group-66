@@ -6,3 +6,6 @@ venv
 
 # Files
 *.log
+.bin
+*~
+#*
