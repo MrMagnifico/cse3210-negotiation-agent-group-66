@@ -27,7 +27,7 @@ from geniusweb.references.ProfileRef import ProfileRef
 from geniusweb.references.ProtocolRef import ProtocolRef
 from geniusweb.references.Reference import Reference
 from pyson.ObjectMapper import ObjectMapper
-from randomparty.RandomParty import RandomParty
+from randomp.randomparty.RandomParty import RandomParty
 from tudelft.utilities.listener.DefaultListenable import DefaultListenable
 from uri.uri import URI  # type: ignore
 

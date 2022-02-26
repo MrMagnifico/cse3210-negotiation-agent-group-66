@@ -1,0 +1,134 @@
+{
+	"LinearAdditiveUtilitySpace": {
+		"name": "9issues1",
+		"issueUtilities": {
+			"i1": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.11,
+					"highValue": 9,
+					"highUtility": 0.99
+
+				}
+			},
+			"i2": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.12,
+					"highValue": 9,
+					"highUtility": 0.97
+
+				}
+			},
+			"i3": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.13,
+					"highValue": 9,
+					"highUtility": 0.96
+
+				}
+			},
+			"i4": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.14,
+					"highValue": 9,
+					"highUtility": 0.94
+
+				}
+			},
+			"i5": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.15,
+					"highValue": 9,
+					"highUtility": 0.93
+
+				}
+			},
+			"i6": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.16,
+					"highValue": 9,
+					"highUtility": 0.92
+
+				}
+			},
+			"i7": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.16,
+					"highValue": 9,
+					"highUtility": 0.91
+
+				}
+			},
+			"i8": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.7664,
+					"highValue": 9,
+					"highUtility": 0.183
+
+				}
+			},
+
+			"i9": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.191,
+					"highValue": 9,
+					"highUtility": 0.891
+
+				}
+			}
+
+		},
+		"issueWeights": {
+			"i1": 0.07531677352656,
+			"i2": 0.18148468268008,
+			"i3": 0.12035193969082,
+			"i4": 0.21649985443378,
+			"i5": 0.15621694966876,
+			"i6": 0.111253,
+			"i7": 0.0656768,
+			"i8": 0.0201,
+			"i9": 0.0531
+		},
+		"domain": {
+			"name": "9issues",
+			"issuesValues": {
+				"i1": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i2": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i3": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i4": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i5": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i6": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i7": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i8": {
+					"range": {"low":0,"high":9,"step":1}
+				},
+				"i9": {
+					"range": {"low":0,"high":9,"step":1}
+				}
+
+			}
+		}
+	}
+}

@@ -1,0 +1,126 @@
+{
+	"LinearAdditiveUtilitySpace": {
+		"name": "party3",
+		"issueUtilities": {
+			"Food": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Chips and Nuts": 1,
+						"Finger-Food": 0.75,
+						"Handmade Food": 0.6,
+						"Catering": 0.5
+					}
+				}
+			},
+			"Drinks": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Non-Alcoholic": 0.99,
+						"Beer Only": 0.02,
+						"Handmade Cocktails": 0.75,
+						"Catering": 0.03
+					}
+				}
+			},
+			"Location": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Party Tent": 0.98,
+						"Your Dorm": 0.8,
+						"Party Room": 0.4,
+						"Ballroom": 0.9
+					}
+				}
+			},
+			"Invitations": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Plain": 0.99,
+						"Photo": 0.67,
+						"Custom, Handmade": 0.52,
+						"Custom, Printed": 0.8
+					}
+				}
+			},
+			"Music": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"MP3": 0.9,
+						"DJ": 0.75,
+						"Band": 1
+					}
+				}
+			},
+			"Cleanup": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Water and Soap": 1,
+						"Specialized Materials": 0.51,
+						"Special Equiment": 0.67,
+						"Hired Help": 0.99
+					}
+				}
+			}
+		},
+		"issueWeights": {
+			"Food": 0.264,
+			"Drinks": 0.190,
+			"Location": 0.223,
+			"Invitations": 0.058,
+			"Music": 0.168,
+			"Cleanup": 0.097
+		},
+		"domain": {
+			"name": "party",
+			"issuesValues": {
+				"Food": {
+					"values": [
+						"Chips and Nuts",
+						"Finger-Food",
+						"Handmade Food",
+						"Catering"
+					]
+				},
+				"Drinks": {
+					"values": [
+						"Non-Alcoholic",
+						"Beer Only",
+						"Handmade Cocktails",
+						"Catering"
+					]
+				},
+				"Location": {
+					"values": [
+						"Party Tent",
+						"Your Dorm",
+						"Party Room",
+						"Ballroom"
+					]
+				},
+				"Invitations": {
+					"values": [
+						"Plain",
+						"Photo",
+						"Custom, Handmade",
+						"Custom, Printed"
+					]
+				},
+				"Music": {
+					"values": [
+						"MP3",
+						"DJ",
+						"Band"
+					]
+				},
+				"Cleanup": {
+					"values": [
+						"Water and Soap",
+						"Specialized Materials",
+						"Special Equiment",
+						"Hired Help"
+					]
+				}
+			}
+		}
+	}
+}

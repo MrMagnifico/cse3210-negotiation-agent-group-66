@@ -1,0 +1,21 @@
+{
+	"SAOPSettings": {
+		"participants": [
+		{"TeamInfo":{"parties":[
+		{
+			"party": {"partyref":"pythonpath:test.testparty.RandomPartyTest.RandomPartyTest", "parameters":{}},
+			"profile": "file:test/resources/jobs/jobs1.json"
+		} ]}}, 
+		{"TeamInfo":{"parties":[
+		{
+			"party": {"partyref":"pythonpath:test.testparty.RandomPartyTest.RandomPartyTest", "parameters":{}},
+			"profile": "file:test/resources/jobs/jobs2.json"
+		} ]}}
+		],
+		"deadline": {
+			"DeadlineTime": {
+				"durationms": 100
+			}
+		}
+	}
+}

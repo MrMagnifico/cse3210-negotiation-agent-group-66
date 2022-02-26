@@ -1,0 +1,65 @@
+{
+	"AllPermutationsSettings": {
+		"teams": [
+			{
+				"Team": [
+					{
+						"partyref": "classpath:geniusweb.exampleparties.randomparty.RandomParty",
+						"parameters": {
+						}
+					}
+				]
+			},
+			{
+				"Team": [
+					{
+						"partyref": "classpath:geniusweb.exampleparties.randomparty.RandomParty",
+						"parameters": {
+						}
+					}
+				]
+			},
+			{
+				"Team": [
+					{
+						"partyref": "classpath:geniusweb.exampleparties.randomparty.RandomParty",
+						"parameters": {
+						}
+					}
+				]
+			}
+		],
+		"reuseTeams": false,
+		"profileslists": [
+			{
+				"ProfileList": [
+					"file:src/test/resources/party/party1.json"
+				]
+			},
+			{
+				"ProfileList": [
+					"file:src/test/resources/party/party2.json"				
+				]
+			},
+			{
+				"ProfileList": [
+					"file:src/test/resources/party/party3.json"					
+				]
+			}
+		],
+		"teamsPerSession": 2,
+		"sessionsettings": {
+			"SAOPSettings": {
+				"participants": [
+				],
+				"deadline": {
+					"DeadlineRounds": {
+						"rounds": 10,
+						"durationms": 1000
+					}
+				}
+			}
+		},
+		"numberTournaments":1
+	}
+}

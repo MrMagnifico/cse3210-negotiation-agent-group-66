@@ -1,0 +1,98 @@
+{
+	"LinearAdditiveUtilitySpace": {
+		"name": "7issues1",
+		"issueUtilities": {
+			"i1": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.11,
+					"highValue": 9,
+					"highUtility": 0.99
+				}
+			},
+			"i2": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.12,
+					"highValue": 9,
+					"highUtility": 0.97
+				}
+			},
+			"i3": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.13,
+					"highValue": 9,
+					"highUtility": 0.96
+				}
+			},
+			"i4": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.14,
+					"highValue": 9,
+					"highUtility": 0.94
+				}
+			},
+			"i5": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.15,
+					"highValue": 9,
+					"highUtility": 0.93
+				}
+			},
+			"i6": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.16,
+					"highValue": 9,
+					"highUtility": 0.92
+				}
+			},
+			"i7": {
+				"NumberValueSetUtilities": {
+					"lowValue": 0,
+					"lowUtility": 0.16,
+					"highValue": 9,
+					"highUtility": 0.91
+				}
+			}
+		},
+		"issueWeights": {
+			"i1": 0.07531677352656704,
+			"i2": 0.18148468268008364,
+			"i3": 0.13035193969082373,
+			"i4": 0.24649985443378972,
+			"i5": 0.16931694966873587,
+			"i6": 0.131353,
+			"i7": 0.0656768
+		},
+		"domain": {
+			"name": "7issues",
+			"issuesValues": {
+				"i1": {
+					"range": {"low":0,"high":9,"step":1} 
+				},
+				"i2": {
+					"range": {"low":0,"high":9,"step":1} 
+				},
+				"i3": {
+					"range": {"low":0,"high":9,"step":1} 
+				},
+				"i4": {
+					"range": {"low":0,"high":9,"step":1} 
+				},
+				"i5": {
+					"range": {"low":0,"high":9,"step":1} 
+				},
+				"i6": {
+					"range": {"low":0,"high":9,"step":1} 
+				},
+				"i7": {
+					"range": {"low":0,"high":9,"step":1} 
+				}
+			}
+		}
+	}
+}

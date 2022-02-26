@@ -1,0 +1,22 @@
+{
+	"MOPACSettings": {
+		"participants": [
+		{"TeamInfo":{"parties":[
+		{
+			"party": {"partyref":"pythonpath:test.testparty.TestParty.TestParty", "parameters":{"power":1}},
+			"profile": "file:test/resources/jobs/jobs1.json"
+		} ]}}, 
+		
+		{"TeamInfo":{"parties":[
+		{
+			"party": {"partyref":"pythonpath:test.testparty.TestParty.TestParty", "parameters":{"pxbower":1}},
+			"profile": "file:test/resources/jobs/jobs2.json"
+		} ]}} ],
+		"deadline": {
+			"DeadlineTime": {
+				"durationms": 2000000
+			}
+		},
+		"votingevaluator":{"LargestAgreementsLoop":{}}
+	}
+}

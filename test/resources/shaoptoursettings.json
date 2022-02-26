@@ -1,0 +1,64 @@
+{
+	"AllPermutationsSettings": {
+		"teams": [
+			{
+				"Team": [
+					{
+						"partyref": "classpath:geniusweb.exampleparties.simpleshaop.ShaopParty",
+						"parameters": {
+						}
+					},{
+						"partyref": "classpath:geniusweb.exampleparties.comparebids.CompareBids",
+						"parameters": {
+						}
+					}
+					
+				]
+			},
+			{
+				"Team": [
+					{
+						"partyref": "classpath:geniusweb.exampleparties.randomparty.RandomParty",
+						"parameters": {
+						}
+					},{
+						"partyref": "classpath:geniusweb.exampleparties.comparebids.CompareBids",
+						"parameters": {
+						}
+					}
+				]
+			}
+		],
+		"reuseTeams": false,
+		"profileslists": [
+			{
+				"ProfileList": [
+					"file:src/test/resources/jobs/jobs1partial.json",
+					"file:src/test/resources/jobs/jobs1partial.json"
+					
+				]
+			},
+			{
+				"ProfileList": [
+					"file:src/test/resources/jobs/jobs2.json",
+					"file:src/test/resources/jobs/jobs2.json"
+					
+				]
+			}
+		],
+		"teamsPerSession": 2,
+		"sessionsettings": {
+			"SHAOPSettings": {
+				"participants": [
+				],
+				"deadline": {
+					"DeadlineRounds": {
+						"rounds": 10,
+						"durationms": 1000
+					}
+				}
+			}
+		},
+		"numberTournaments":1
+	}
+}
