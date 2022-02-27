@@ -1,6 +1,2 @@
-# GeniusWeb / Template
-https://tracinsy.ewi.tudelft.nl/pubtrac/GeniusWebPython/export/82/geniuswebcore/dist/geniusweb-1.1.4.tar.gz
-mypy
-
-# Project-specific
-pre-commit
+https://tracinsy.ewi.tudelft.nl/pubtrac/GeniusWebPython/export/83/geniuswebcore/dist/geniusweb-1.1.4.tar.gz
+plotly==5.1.0

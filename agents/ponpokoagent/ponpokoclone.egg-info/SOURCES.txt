@@ -1,0 +1,10 @@
+ponpokoparty.py
+setup.py
+ponpoko/__init__.py
+ponpoko/patterns.py
+ponpoko/ponpoko.py
+ponpokoclone.egg-info/PKG-INFO
+ponpokoclone.egg-info/SOURCES.txt
+ponpokoclone.egg-info/dependency_links.txt
+ponpokoclone.egg-info/requires.txt
+ponpokoclone.egg-info/top_level.txt
