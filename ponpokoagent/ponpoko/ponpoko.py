@@ -107,7 +107,7 @@ class PonPokoParty(DefaultParty):
         self.getConnection().send(action)
 
     def _isGood(self, bid: Bid) -> bool:
-        _, low = self._utility_func(self._turn_counter)
+        _, low = self._utility_func(self._turn_counter, 0.0)
         
         if bid is not None:
             return False
@@ -117,13 +117,14 @@ class PonPokoParty(DefaultParty):
         raise Exception("Can not handle this type of profile")
 
     def _getRandomBid(self, domain: Domain) -> Bid:
-        high, low = self._utility_func(self._turn_counter)
+        high, low = self._utility_func(self._turn_counter, 0.0)
         
         allBids = AllBidsList(domain)
 
         while True:
             bid = allBids.get(randint(0, allBids.size() - 1))
-            if profile.getUtility(bid) >= low and profile.getUtility(high):
+            profile = self._profile.getProfile()
+            if profile.getUtility(bid) >= low and profile.getUtility(bid) <= high:
                 return bid    
                 
 

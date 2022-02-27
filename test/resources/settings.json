@@ -1,21 +1,51 @@
 {
-	"SAOPSettings": {
-		"participants": [
-		{"TeamInfo":{"parties":[
-		{
-			"party": {"partyref":"pythonpath:test.testparty.RandomPartyTest.RandomPartyTest", "parameters":{}},
-			"profile": "file:test/resources/jobs/jobs1.json"
-		} ]}}, 
-		{"TeamInfo":{"parties":[
-		{
-			"party": {"partyref":"pythonpath:test.testparty.RandomPartyTest.RandomPartyTest", "parameters":{}},
-			"profile": "file:test/resources/jobs/jobs2.json"
-		} ]}}
-		],
-		"deadline": {
-			"DeadlineTime": {
-				"durationms": 100
-			}
-		}
-	}
+  "SAOPSettings": {
+    "deadline": {
+      "DeadlineTime": {
+        "durationms": 100
+      }
+    },
+    "participants": [
+      {
+        "TeamInfo": {
+          "parties": [
+            {
+              "profile": "file:test/resources/jobs/jobs1.json",
+              "party": {
+                "parameters": {},
+                "partyref": "pythonpath:randomp.randomparty.RandomParty.RandomParty"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "TeamInfo": {
+          "parties": [
+            {
+              "profile": "file:test/resources/jobs/jobs2.json",
+              "party": {
+                "parameters": {},
+                "partyref": "pythonpath:randomp.randomparty.RandomParty.RandomParty"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "TeamInfo": {
+          "parties": [
+            {
+              "profile": "file:test/resources/jobs/jobs1.json",
+              "party": {
+                "parameters": {},
+                "partyref": "pythonpath:ponpokoagent.ponpoko.ponpoko.PonPokoParty"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
 }
+

@@ -102,7 +102,7 @@ class RandomParty(DefaultParty):
         self.getConnection().send(action)
 
     def _isGood(self, bid: Bid) -> bool:
-        if bid is not None:
+        if bid == None:
             return False
         profile = self._profile.getProfile()
         if isinstance(profile, UtilitySpace):
