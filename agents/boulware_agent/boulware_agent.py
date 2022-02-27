@@ -1,5 +1,6 @@
-from agents.time_dependent_agent.time_dependent_agent import TimeDependentAgent
 from tudelft_utilities_logging.Reporter import Reporter
+
+from agents.time_dependent_agent.time_dependent_agent import TimeDependentAgent
 
 
 class BoulwareAgent(TimeDependentAgent):
@@ -15,8 +16,7 @@ class BoulwareAgent(TimeDependentAgent):
     def getDescription(self) -> str:
         return (
             "Boulware: reluctant to concede. Parameters minPower (default 1) "
-            + "and maxPower (default infinity) are used when voting"
-        )
+            + "and maxPower (default infinity) are used when voting")
 
     # Override
     def getE(self) -> float:

@@ -29,9 +29,12 @@ repos:
     rev: v0.931
     hooks:
     -   id: mypy
+        files: '^(agents/ponpokoagent)'
+
 -   repo: https://github.com/pycqa/flake8
     rev: '4.0.1'
     hooks:
     -   id: flake8
         args: [--config=config/.flake8]
+        files: '^(agents/ponpokoagent)'
         additional_dependencies: [flake8-docstrings]

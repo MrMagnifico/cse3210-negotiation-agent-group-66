@@ -17,8 +17,10 @@ settings = {
         "agents.randomp.randomparty.RandomParty.RandomParty",
         "agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty",
     ],
-    "profiles": ["domains/domain00/profileA.json", "domains/domain00/profileB.json"],
-    "deadline_rounds": 200,
+    "profiles":
+    ["domains/domain00/profileA.json", "domains/domain00/profileB.json"],
+    "deadline_rounds":
+    200,
 }
 
 # run a session and obtain results in dictionaries

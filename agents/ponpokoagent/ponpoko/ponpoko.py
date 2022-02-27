@@ -25,7 +25,9 @@ from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.profileconnection.ProfileConnectionFactory import ProfileConnectionFactory
 from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.utils import val
+
 from .patterns import Patterns
+
 
 class PonPokoParty(DefaultParty):
     """Offers random bids until a bid with sufficient utility is offered."""
@@ -35,7 +37,7 @@ class PonPokoParty(DefaultParty):
         self.getReporter().log(logging.INFO, "party is initialized")
         self._profile = None
         self._lastReceivedBid: Bid = None
-        self._turn_counter = 0 
+        self._turn_counter = 0
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
 
@@ -94,7 +96,7 @@ class PonPokoParty(DefaultParty):
 
     def _myTurn(self):
         self._turn_counter += 1
-        
+
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
@@ -108,12 +110,13 @@ class PonPokoParty(DefaultParty):
 
     def _isGood(self, bid: Bid) -> bool:
         high, low = self._utility_func(self._turn_counter, 0.0)
-        
+
         if bid is not None:
             return False
         profile = self._profile.getProfile()
         if isinstance(profile, UtilitySpace):
-            return profile.getUtility(bid) >= low and profile.getUtility(bid) <= high 
+            return profile.getUtility(bid) >= low and profile.getUtility(
+                bid) <= high
         raise Exception("Can not handle this type of profile")
 
     def _getRandomBid(self, domain: Domain) -> Bid:

@@ -1,3 +1,6 @@
+from decimal import Decimal
+from typing import List
+
 from geniusweb.bidspace.BidsWithUtility import BidsWithUtility
 from geniusweb.bidspace.Interval import Interval
 from geniusweb.bidspace.IssueInfo import IssueInfo
@@ -5,8 +8,6 @@ from geniusweb.issuevalue.Bid import Bid
 from geniusweb.issuevalue.Value import Value
 from geniusweb.profile.utilityspace.LinearAdditive import LinearAdditive
 from tudelft.utilities.immutablelist.ImmutableList import ImmutableList
-from decimal import Decimal
-from typing import List
 
 
 class ExtendedUtilSpace:
@@ -75,5 +76,4 @@ class ExtendedUtilSpace:
                 utilitygoal]
         """
         return self._bidutils.getBids(
-            Interval(utilityGoal - self._tolerance, utilityGoal)
-        )
+            Interval(utilityGoal - self._tolerance, utilityGoal))

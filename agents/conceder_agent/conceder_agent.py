@@ -1,5 +1,6 @@
-from agents.time_dependent_agent.time_dependent_agent import TimeDependentAgent
 from tudelft_utilities_logging.Reporter import Reporter
+
+from agents.time_dependent_agent.time_dependent_agent import TimeDependentAgent
 
 
 class ConcederAgent(TimeDependentAgent):
@@ -14,8 +15,8 @@ class ConcederAgent(TimeDependentAgent):
     # Override
     def getDescription(self) -> str:
         return (
-            "Conceder: going to the reservation value very quickly. "
-            + "Parameters minPower (default 1) and maxPower (default infinity) are used when voting"
+            "Conceder: going to the reservation value very quickly. " +
+            "Parameters minPower (default 1) and maxPower (default infinity) are used when voting"
         )
 
     # Override
