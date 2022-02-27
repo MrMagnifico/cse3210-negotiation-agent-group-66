@@ -113,12 +113,10 @@ class PonPokoParty(DefaultParty):
             return False
         profile = self._profile.getProfile()
         if isinstance(profile, UtilitySpace):
-            return profile.getUtility(bid) >= low and profile.getUility(bid) <= high 
+            return profile.getUtility(bid) >= low and profile.getUtility(bid) <= high 
         raise Exception("Can not handle this type of profile")
 
     def _getRandomBid(self, domain: Domain) -> Bid:
-        high, low = self._utility_func(self._turn_counter, 0.0)
-        
         allBids = AllBidsList(domain)
         return allBids.get(randint(0, allBids.size() - 1))
 
