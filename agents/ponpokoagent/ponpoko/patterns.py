@@ -36,12 +36,10 @@ def pattern_3(t: float, iftime: float):
 
 def pattern_4(t: float, iftime: float):
     highest_util = 1.0 - 0.05*t
-
     if iftime <= 0.99:
         lowest_util = 1.0 - 0.1*t 
     else:
         lowest_util = 1.0 - 0.3*t
-
     return (highest_util, lowest_util)
 
 def pattern_5(t: float, iftime: float):

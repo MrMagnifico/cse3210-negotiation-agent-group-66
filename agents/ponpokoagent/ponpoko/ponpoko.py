@@ -1,5 +1,6 @@
 import logging
 from decimal import Decimal
+from math import isclose
 from random import randint
 from socket import close
 from time import time_ns
@@ -113,21 +114,22 @@ class PonPokoParty(DefaultParty):
             candidate_found = False
             high, low = self._utility_func(self._getTimeFraction(), 0.0)
             median = (high + low) / 2
-            median_util_diff = 1
+            close_to_median = []
+
             for _attempt in range(allBids.size()):
                 bid = allBids.get(_attempt)
 
                 # Update bids close to median utility
                 current_bid_diff = abs(self._profile.getProfile().getUtility(bid) - Decimal(median))
-                if current_bid_diff < median_util_diff:
-                    median_util_diff = current_bid_diff
-                    closest_to_median_bid = bid
+                if isclose(current_bid_diff, 0, abs_tol=0.05):
+                    close_to_median.append(bid)
 
                 if self._isGood(bid):
                     candidate_found = True
                     break
+                
             if not candidate_found:
-                bid = closest_to_median_bid
+                bid = close_to_median[randint(0, len(close_to_median) - 1)]
             action = Offer(self._me, bid)
         self.getConnection().send(action)
 
