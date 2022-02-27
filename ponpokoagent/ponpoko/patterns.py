@@ -16,7 +16,7 @@ def generate_pattern(one, two, op_one=sub, op_two=sub):
 
 pattern_1 = generate_pattern((0.1, 0), (0.1, 40))
 pattern_2 = generate_pattern((0.1, 0) , (0.22, 0))
-pattern_3 = generate_pattern((0.05, 0), (0.15, 20))
+pattern_3 = generate_pattern((0.1, 0), (0.15, 20))
 pattern_5 = generate_pattern((0.15, 20), (0.21, 20), op_one=mul, op_two=mul)
 
 def pattern_4(t: int, iftime: float):
