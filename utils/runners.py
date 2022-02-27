@@ -37,32 +37,33 @@ def run_session(settings) -> Tuple[dict, dict]:
             "participants": [
                 {
                     "TeamInfo": {
-                        "parties": [
-                            {
-                                "party": {
-                                    "partyref": f"pythonpath:{agents[0]}",
-                                    "parameters": {},
-                                },
-                                "profile": profiles_uri[0],
-                            }
-                        ]
+                        "parties": [{
+                            "party": {
+                                "partyref": f"pythonpath:{agents[0]}",
+                                "parameters": {},
+                            },
+                            "profile": profiles_uri[0],
+                        }]
                     }
                 },
                 {
                     "TeamInfo": {
-                        "parties": [
-                            {
-                                "party": {
-                                    "partyref": f"pythonpath:{agents[1]}",
-                                    "parameters": {},
-                                },
-                                "profile": profiles_uri[1],
-                            }
-                        ]
+                        "parties": [{
+                            "party": {
+                                "partyref": f"pythonpath:{agents[1]}",
+                                "parameters": {},
+                            },
+                            "profile": profiles_uri[1],
+                        }]
                     }
                 },
             ],
-            "deadline": {"DeadlineRounds": {"rounds": rounds, "durationms": 60000}},
+            "deadline": {
+                "DeadlineRounds": {
+                    "rounds": rounds,
+                    "durationms": 60000
+                }
+            },
         }
     }
 
@@ -70,7 +71,8 @@ def run_session(settings) -> Tuple[dict, dict]:
     settings_obj = ObjectMapper().parse(settings_full, NegoSettings)
 
     # create the negotiation session runner object
-    runner = NegoRunner(settings_obj, ClassPathConnectionFactory(), StdOutReporter(), 0)
+    runner = NegoRunner(settings_obj, ClassPathConnectionFactory(),
+                        StdOutReporter(), 0)
 
     # run the negotiation session
     runner.run()
@@ -80,7 +82,8 @@ def run_session(settings) -> Tuple[dict, dict]:
     results_dict = ObjectMapper().toJson(results_class)
 
     # add utilities to the results and create a summary
-    results_trace, results_summary = process_results(results_class, results_dict)
+    results_trace, results_summary = process_results(results_class,
+                                                     results_dict)
 
     return results_trace, results_summary
 
@@ -91,13 +94,13 @@ def run_tournament(tournament_settings: dict) -> Tuple[list, list]:
     profile_sets = tournament_settings["profile_sets"]
     deadline_rounds = tournament_settings["deadline_rounds"]
 
-    num_sessions = (factorial(len(agents)) // factorial(len(agents) - 2)) * len(profile_sets)
+    num_sessions = (factorial(len(agents))
+                    // factorial(len(agents) - 2)) * len(profile_sets)
     if num_sessions > 100:
         message = f"WARNING: this would run {num_sessions} negotiation sessions. Proceed?"
         if not ask_proceed(message):
             print("Exiting script")
             exit()
-
 
     results_summaries = []
     tournament = []
@@ -155,7 +158,8 @@ def process_results(results_class, results_dict):
             # add utility of both agents
             bid = action_class.getBid()
             offer["utilities"] = {
-                k: float(v.getUtility(bid)) for k, v in utility_funcs.items()
+                k: float(v.getUtility(bid))
+                for k, v in utility_funcs.items()
             }
 
         results_summary["num_offers"] = num_offer + 1
@@ -193,8 +197,7 @@ def process_results(results_class, results_dict):
 
 def get_utility_function(profile_uri) -> LinearAdditiveUtilitySpace:
     profile_connection = ProfileConnectionFactory.create(
-        URI(profile_uri), StdOutReporter()
-    )
+        URI(profile_uri), StdOutReporter())
     profile = profile_connection.getProfile()
     assert isinstance(profile, LinearAdditiveUtilitySpace)
 

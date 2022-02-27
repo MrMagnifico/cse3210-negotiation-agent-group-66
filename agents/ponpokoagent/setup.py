@@ -4,8 +4,7 @@ from setuptools import setup
 setup(
     name='ponpokoclone',
     version='1.0.0',
-    description=
-    '''Port of the Pon Poko Agent to Python''', 
+    description='''Port of the Pon Poko Agent to Python''',
     url='https://tracinsy.ewi.tudelft.nl/pubtrac/GeniusWeb',
     author='V.D. van de Beek',
     packages=['ponpoko'],

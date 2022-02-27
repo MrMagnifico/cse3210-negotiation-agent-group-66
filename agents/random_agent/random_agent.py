@@ -1,7 +1,11 @@
 import logging
-from random import randint
 import traceback
-from typing import cast, Dict, List, Set, Collection
+from random import randint
+from typing import cast
+from typing import Collection
+from typing import Dict
+from typing import List
+from typing import Set
 
 from geniusweb.actions.Accept import Accept
 from geniusweb.actions.Action import Action
@@ -26,8 +30,7 @@ from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.profileconnection.ProfileConnectionFactory import (
-    ProfileConnectionFactory,
-)
+    ProfileConnectionFactory, )
 from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.utils import val
 
@@ -52,11 +55,11 @@ class RandomAgent(DefaultParty):
             self._protocol: str = str(self._settings.getProtocol().getURI())
             self._progress = self._settings.getProgress()
             if "Learn" == self._protocol:
-                self.getConnection().send(LearningDone(self._me))  # type:ignore
+                self.getConnection().send(LearningDone(
+                    self._me))  # type:ignore
             else:
                 self._profile = ProfileConnectionFactory.create(
-                    info.getProfile().getURI(), self.getReporter()
-                )
+                    info.getProfile().getURI(), self.getReporter())
         elif isinstance(info, ActionDone):
             action: Action = cast(ActionDone, info).getAction()
             if isinstance(action, Offer):
@@ -74,9 +77,8 @@ class RandomAgent(DefaultParty):
         elif isinstance(info, OptIn):
             val(self.getConnection()).send(self._lastvotes)
         else:
-            self.getReporter().log(
-                logging.WARNING, "Ignoring unknown info " + str(info)
-            )
+            self.getReporter().log(logging.WARNING,
+                                   "Ignoring unknown info " + str(info))
 
     # Override
     def getCapabilities(self) -> Capabilities:
@@ -102,7 +104,8 @@ class RandomAgent(DefaultParty):
             action = Accept(self._me, self._lastReceivedBid)
         else:
             for _attempt in range(20):
-                bid = self._getRandomBid(self._profile.getProfile().getDomain())
+                bid = self._getRandomBid(
+                    self._profile.getProfile().getDomain())
                 if self._isGood(bid):
                     break
             action = Offer(self._me, bid)
@@ -131,11 +134,8 @@ class RandomAgent(DefaultParty):
         val = self._settings.getParameters().get("maxPower")
         maxpower: int = val if isinstance(val, int) else 9999999
 
-        votes: Set[Vote] = set(
-            [
-                Vote(self._me, offer.getBid(), minpower, maxpower)
-                for offer in voting.getOffers()
-                if self._isGood(offer.getBid())
-            ]
-        )
+        votes: Set[Vote] = set([
+            Vote(self._me, offer.getBid(), minpower, maxpower)
+            for offer in voting.getOffers() if self._isGood(offer.getBid())
+        ])
         return Votes(self._me, votes)

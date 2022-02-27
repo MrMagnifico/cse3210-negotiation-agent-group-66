@@ -20,8 +20,7 @@ from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.profileconnection.ProfileConnectionFactory import (
-    ProfileConnectionFactory,
-)
+    ProfileConnectionFactory, )
 from geniusweb.progress.ProgressRounds import ProgressRounds
 
 
@@ -54,8 +53,7 @@ class TemplateAgent(DefaultParty):
 
             # the profile contains the preferences of the agent over the domain
             self._profile = ProfileConnectionFactory.create(
-                info.getProfile().getURI(), self.getReporter()
-            )
+                info.getProfile().getURI(), self.getReporter())
         # ActionDone is an action send by an opponent (an offer or an accept)
         elif isinstance(info, ActionDone):
             action: Action = cast(ActionDone, info).getAction()
@@ -76,9 +74,8 @@ class TemplateAgent(DefaultParty):
             # terminate the agent MUST BE CALLED
             self.terminate()
         else:
-            self.getReporter().log(
-                logging.WARNING, "Ignoring unknown info " + str(info)
-            )
+            self.getReporter().log(logging.WARNING,
+                                   "Ignoring unknown info " + str(info))
 
     # lets the geniusweb system know what settings this agent can handle
     # leave it as it is for this course
