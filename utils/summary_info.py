@@ -57,8 +57,14 @@ def print_party_data(data, party):
     print(f"Average total utility: {average_total}")
     print(f"Average agreed total utility: {average_agreed_total}")
 
+    nash_list = [summary['nash_product'] for summary in values]
+    welfare_list = [summary['social_welfare'] for summary in values]
+    average_nash = sum(nash_list) / len(nash_list)
+    average_welfare = sum(welfare_list) / len(welfare_list)
+    print(f"Average Nash Product: {average_nash}")
+    print(f"Social welfare: {average_welfare}")
     print()
-    return average_agreed_total
+    return average_total, average_nash, average_welfare
 
 
 with open('results/results_summaries.json') as f:
@@ -74,14 +80,29 @@ with open('results/results_summaries.json') as f:
         result[party] = print_party_data(data, party)
 
     print("=============\nFinal\n=============")
-    average = sum(result.values()) / len(result)
-    print(f"Average utility: {average}")
-    sort = reversed(sorted(result, key=lambda k: result[k]))
+    average_utility = sum([x[0] for x in result.values()]) / len(result)
+    average_nash = sum([x[1] for x in result.values()]) / len(result)
+    average_welfare = sum([x[2] for x in result.values()]) / len(result)
+    print(f"Average utility: {average_utility}")
+    print(f"Average nash: {average_nash}")
+    print(f"Average welfare: {average_welfare}\n")
+
+    sort = reversed(sorted(result, key=lambda k: result[k][0]))
 
     index = 0
+    print("Party\t\t\t\t Utility\t\t\t Nash Product\t\t\t Welfare")
     for party in sort:
-        value = round(result[party], 4)
-        relative = round(average - value, 4)
-        percentage = round((value / average) * 100)
-        print(f"[{index}] {party}:\t\t {value} -> {relative} {percentage}%")
+        value = round(result[party][0], 4)
+        relative = round(average_utility - value, 4)
+        percentage = 100 - round((value / average_utility) * 100)
+
+        nash = round(result[party][1], 4)
+        nash_relative = round(average_nash - nash, 4)
+
+        welfare = round(result[party][2], 4)
+        welfare_relative = round(average_welfare - welfare, 4)
+
+        print(
+            f"[{index}] {party}:\t\t {value} ({relative}, {percentage}%)\t\t {nash} ({nash_relative})\t\t {welfare} ({welfare_relative})  "
+        )
         index += 1
