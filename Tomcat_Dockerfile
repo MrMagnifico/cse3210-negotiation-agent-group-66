@@ -19,8 +19,8 @@ run wget "http://artifactory.ewi.tudelft.nl/artifactory/libs-release-local/geniu
 
 ENV PYTHON3EXE /usr/bin/python3
 RUN unzip -d pypartiesserver-2.1.0 pypartiesserver-2.1.0.war
-COPY --from=0 /usr/src/party/randomp/dist /usr/local/tomcat/webapps/pypartiesserver-2.1.0/partiesrepo
-COPY --from=0 /usr/src/party/ponpokoagent/dist /usr/local/tomcat/webapps/pypartiesserver-2.1.0/partiesrepo
+COPY --from=0 /usr/src/party/agents/randomp/dist /usr/local/tomcat/webapps/pypartiesserver-2.1.0/partiesrepo
+COPY --from=0 /usr/src/party/agents/ponpokoagent/dist /usr/local/tomcat/webapps/pypartiesserver-2.1.0/partiesrepo
 
 
 CMD ["catalina.sh", "run"]

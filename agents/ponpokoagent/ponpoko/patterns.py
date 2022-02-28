@@ -47,7 +47,7 @@ def pattern_4(t: float, iftime: float):
 class Patterns:
     """An iterator which generates different patterns."""
 
-    _patterns = [pattern_1, pattern_2, pattern_3, pattern_4, pattern_5]
+    _patterns = [pattern_1, pattern_2, pattern_3, pattern_5]
 
     def __init__(self, random):
         """Creates the pattern generator."""
