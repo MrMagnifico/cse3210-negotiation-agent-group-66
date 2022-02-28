@@ -47,7 +47,9 @@ class PonPokoParty(DefaultParty):
 
     def __init__(self):
         super().__init__()
-        self.getReporter().log(logging.INFO, "party is initialized")
+        self.getReporter().log(
+            logging.INFO,
+            f"party is initialized with frequency: {PATTERN_CHANGE_FREQUENCY}")
         self._profile = None
         self._lastReceivedBid: Bid = None
         self._utility_generator = Patterns(False)
@@ -115,7 +117,10 @@ class PonPokoParty(DefaultParty):
 
     def _myTurn(self):
         if self._change_pattern_count == 0:
-            self.getReporter().log(logging.INFO, "Changing utility function")
+            self.getReporter().log(
+                logging.INFO,
+                f"Changing utility function to {self._utility_generator._index}"
+            )
             self._utility_func = next(self._utility_generator)
             self._change_pattern_count = PATTERN_CHANGE_FREQUENCY
         else:
@@ -126,7 +131,10 @@ class PonPokoParty(DefaultParty):
         else:
             allBids = AllBidsList(self._profile.getProfile().getDomain())
             candidate_found = False
-            high, low = self._utility_func(self._getTimeFraction(), 0.0)
+            high, low = self._utility_func(self._getTimeFraction(), 1.0)
+            self.getReporter().log(logging.INFO,
+                                   f"Utility range [{low}, {high}]")
+
             median = (high + low) / 2
             close_to_median = []
 

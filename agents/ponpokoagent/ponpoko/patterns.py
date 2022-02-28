@@ -5,8 +5,6 @@ from operator import sub
 from random import randint
 from random import random
 
-# from operator import mul
-
 
 # === Pattern Generation Magic ===
 def _generate_value(a, b, op):
@@ -18,8 +16,8 @@ def _generate_value(a, b, op):
         return lambda t: 1.0 - op(a * t, abs(sin(b * t)))
 
 
-def generate_pattern(one, two, op_one=sub, op_two=sub):
-    """Generates a pattern based on the algorithsm described in the ANAC 2017 paper."""
+def _generate_pattern(one, two, op_one=sub, op_two=sub):
+    """Generates a pattern based on the algoriths described in the ANAC 2017 paper."""
     a, b = one
     c, d = two
 
@@ -30,10 +28,10 @@ def generate_pattern(one, two, op_one=sub, op_two=sub):
     return inner
 
 
-pattern_1 = generate_pattern((0.1, 0), (0.1, 40))
-pattern_2 = generate_pattern((0.1, 0), (0.22, 0))
-pattern_3 = generate_pattern((0.1, 0), (0.15, 20))
-pattern_5 = generate_pattern((0.15, 20), (0.21, 20), op_one=mul, op_two=mul)
+pattern_1 = _generate_pattern((0.1, 0), (0.1, 40))
+pattern_2 = _generate_pattern((0.1, 0), (0.22, 0))
+pattern_3 = _generate_pattern((0.1, 0), (0.15, 20))
+pattern_5 = _generate_pattern((0.15, 20), (0.21, 20), op_one=mul, op_two=mul)
 
 
 def pattern_4(t: float, iftime: float):
@@ -59,6 +57,8 @@ class Patterns:
     def __next__(self):
         """Generates a function which returns a pair with the utility values."""
         if self._random:
-            return generate_pattern((random(), random()), (random(), random()))
+            return _generate_pattern((random(), random()),
+                                     (random(), random()))
+        self._index = randint(0, len(self._patterns) - 1)
 
-        return self._patterns[randint(0, len(self._patterns) - 1)]
+        return self._patterns[self._index]

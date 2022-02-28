@@ -166,19 +166,23 @@ def process_results(results_class, results_dict):
 
         # gather a summary of results
         if "Accept" in action_dict:
+            value = 0
             for actor, utility in offer["utilities"].items():
+                value += 1
                 position = actor.split("_")[-1]
-                results_summary[f"agent_{position}"] = agent_translate[actor]
-                results_summary[f"utility_{position}"] = utility
+                results_summary[f"agent_{value}"] = agent_translate[actor]
+                results_summary[f"utility_{value}"] = utility
             util_1, util_2 = offer["utilities"].values()
             results_summary["nash_product"] = util_1 * util_2
             results_summary["social_welfare"] = util_1 + util_2
             results_summary["result"] = "agreement"
         else:
+            value = 0
             for actor, utility in offer["utilities"].items():
                 position = actor.split("_")[-1]
-                results_summary[f"agent_{position}"] = agent_translate[actor]
-                results_summary[f"utility_{position}"] = 0
+                value += 1
+                results_summary[f"agent_{value}"] = agent_translate[actor]
+                results_summary[f"utility_{value}"] = 0
             results_summary["nash_product"] = 0
             results_summary["social_welfare"] = 0
             results_summary["result"] = "failed"
