@@ -66,43 +66,43 @@ def print_party_data(data, party):
     print()
     return average_total, average_nash, average_welfare
 
+if __name__ == "__main__":
+    with open('results/results_summaries.json') as f:
+        content = ''.join(f.readlines())
+        data = json.JSONDecoder().decode(content)
 
-with open('results/results_summaries.json') as f:
-    content = ''.join(f.readlines())
-    data = json.JSONDecoder().decode(content)
+        result = {}
+        for party in [
+                "BoulwareAgent", "ConcederAgent", "HardlinerAgent", "LinearAgent",
+                "RandomAgent", "StupidAgent", "TemplateAgent", "CustomAgent",
+                "RandomParty", "PonPokoParty"
+        ]:
+            result[party] = print_party_data(data, party)
 
-    result = {}
-    for party in [
-            "BoulwareAgent", "ConcederAgent", "HardlinerAgent", "LinearAgent",
-            "RandomAgent", "StupidAgent", "TemplateAgent", "CustomAgent",
-            "RandomParty", "PonPokoParty"
-    ]:
-        result[party] = print_party_data(data, party)
+        print("=============\nFinal\n=============")
+        average_utility = sum([x[0] for x in result.values()]) / len(result)
+        average_nash = sum([x[1] for x in result.values()]) / len(result)
+        average_welfare = sum([x[2] for x in result.values()]) / len(result)
+        print(f"Average utility: {average_utility}")
+        print(f"Average nash: {average_nash}")
+        print(f"Average welfare: {average_welfare}\n")
 
-    print("=============\nFinal\n=============")
-    average_utility = sum([x[0] for x in result.values()]) / len(result)
-    average_nash = sum([x[1] for x in result.values()]) / len(result)
-    average_welfare = sum([x[2] for x in result.values()]) / len(result)
-    print(f"Average utility: {average_utility}")
-    print(f"Average nash: {average_nash}")
-    print(f"Average welfare: {average_welfare}\n")
+        sort = reversed(sorted(result, key=lambda k: result[k][0]))
 
-    sort = reversed(sorted(result, key=lambda k: result[k][0]))
+        index = 0
+        print("Party\t\t\t\t Utility\t\t\t Nash Product\t\t\t Welfare")
+        for party in sort:
+            value = round(result[party][0], 4)
+            relative = round(average_utility - value, 4)
+            percentage = 100 - round((value / average_utility) * 100)
 
-    index = 0
-    print("Party\t\t\t\t Utility\t\t\t Nash Product\t\t\t Welfare")
-    for party in sort:
-        value = round(result[party][0], 4)
-        relative = round(average_utility - value, 4)
-        percentage = 100 - round((value / average_utility) * 100)
+            nash = round(result[party][1], 4)
+            nash_relative = round(average_nash - nash, 4)
 
-        nash = round(result[party][1], 4)
-        nash_relative = round(average_nash - nash, 4)
+            welfare = round(result[party][2], 4)
+            welfare_relative = round(average_welfare - welfare, 4)
 
-        welfare = round(result[party][2], 4)
-        welfare_relative = round(average_welfare - welfare, 4)
-
-        print(
-            f"[{index}] {party}:\t\t {value} ({relative}, {percentage}%)\t\t {nash} ({nash_relative})\t\t {welfare} ({welfare_relative})  "
-        )
-        index += 1
+            print(
+                f"[{index}] {party}:\t\t {value} ({relative}, {percentage}%)\t\t {nash} ({nash_relative})\t\t {welfare} ({welfare_relative})  "
+            )
+            index += 1

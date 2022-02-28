@@ -47,6 +47,7 @@ class PonPokoParty(DefaultParty):
         self._lastReceivedBid: Bid = None
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
+        self._PATTERN_CHANGE_FREQUENCY = -1
 
     # Override
     def notifyChange(self, info: Inform):
@@ -58,8 +59,9 @@ class PonPokoParty(DefaultParty):
             
             if self._settings.getParameters().containsKey("patternChangeFrequency"):
                 self._PATTERN_CHANGE_FREQUENCY = int(self._settings.getParameters().get("patternChangeFrequency"))
-            else:
-                self._PATTERN_CHANGE_FREQUENCY = -1
+                self.getReporter().log(
+                    logging.INFO,
+                    f"Pattern change frequency set to {self._PATTERN_CHANGE_FREQUENCY}")
             self._pattern_change_count = self._PATTERN_CHANGE_FREQUENCY
 
             if "Learn" == self._protocol:
