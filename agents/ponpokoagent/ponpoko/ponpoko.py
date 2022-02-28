@@ -31,6 +31,9 @@ from geniusweb.utils import val
 
 from .patterns import Patterns
 
+# Amount of turns before ponpoko change utility function
+PATTERN_CHANGE_FREQUENCY = -1
+
 
 class PonPokoParty(DefaultParty):
     """
@@ -49,6 +52,7 @@ class PonPokoParty(DefaultParty):
         self._lastReceivedBid: Bid = None
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
+        self._change_pattern_count = PATTERN_CHANGE_FREQUENCY
 
     # Override
     def notifyChange(self, info: Inform):
@@ -110,6 +114,13 @@ class PonPokoParty(DefaultParty):
             self._profile = None
 
     def _myTurn(self):
+        if self._change_pattern_count == 0:
+            self.getReporter().log(logging.INFO, "Changing utility function")
+            self._utility_func = next(self._utility_generator)
+            self._change_pattern_count = PATTERN_CHANGE_FREQUENCY
+        else:
+            self._change_pattern_count -= 1
+
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
