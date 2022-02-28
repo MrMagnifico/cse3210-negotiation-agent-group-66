@@ -135,6 +135,10 @@ class PonPokoParty(DefaultParty):
             self.getReporter().log(logging.INFO,
                                    f"Utility range [{low}, {high}]")
 
+            if low > high:
+                tmp = low
+                low = high
+                high = tmp
             median = (high + low) / 2
             close_to_median = []
 

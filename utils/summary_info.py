@@ -103,6 +103,7 @@ with open('results/results_summaries.json') as f:
         welfare_relative = round(average_welfare - welfare, 4)
 
         print(
-            f"[{index}] {party}:\t\t {value} ({relative}, {percentage}%)\t\t {nash} ({nash_relative})\t\t {welfare} ({welfare_relative})  "
+            f"[{index}] {party}:\t\t {value} ({relative}, {percentage}%)"
+            f"\t\t {nash}({nash_relative})\t\t\t{welfare} ({welfare_relative})"
         )
         index += 1
