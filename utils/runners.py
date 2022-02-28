@@ -13,6 +13,7 @@ from geniusweb.simplerunner.ClassPathConnectionFactory import \
 from geniusweb.simplerunner.NegoRunner import NegoRunner
 from pyson.ObjectMapper import ObjectMapper
 from uri.uri import URI
+from agents.ponpokoagent import ponpoko
 
 from utils.ask_proceed import ask_proceed
 from utils.std_out_reporter import StdOutReporter
@@ -67,6 +68,15 @@ def run_session(settings) -> Tuple[dict, dict]:
         }
     }
 
+    # Add ponpoko params
+    # TODO: Make this less hacky
+    if "ponpoko_params" in settings and agents[0] == "agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty":
+        first_party = settings_full["SAOPSettings"]["participants"][0]
+        first_party["TeamInfo"]["parties"][0]["party"]["parameters"] = settings["ponpoko_params"]
+    elif "ponpoko_params" in settings and agents[1] == "agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty":
+        second_party = settings_full["SAOPSettings"]["participants"][1]
+        second_party["TeamInfo"]["parties"][0]["party"]["parameters"] = settings["ponpoko_params"]
+
     # parse settings dict to settings object
     settings_obj = ObjectMapper().parse(settings_full, NegoSettings)
 
@@ -93,10 +103,16 @@ def run_tournament(tournament_settings: dict) -> Tuple[list, list]:
     agents = tournament_settings["agents"]
     profile_sets = tournament_settings["profile_sets"]
     deadline_rounds = tournament_settings["deadline_rounds"]
+    
+    # TODO: Again, make this less hacky
+    ponpoko_params = tournament_settings["ponpoko_params"]
+    warning_disable = 0
+    if "no_warning" in tournament_settings:
+        warning_disable = tournament_settings["no_warning"]
 
     num_sessions = (factorial(len(agents))
                     // factorial(len(agents) - 2)) * len(profile_sets)
-    if num_sessions > 100:
+    if num_sessions > 100 and warning_disable != 1:
         message = f"WARNING: this would run {num_sessions} negotiation sessions. Proceed?"
         if not ask_proceed(message):
             print("Exiting script")
@@ -113,6 +129,7 @@ def run_tournament(tournament_settings: dict) -> Tuple[list, list]:
                 "agents": list(agent_duo),
                 "profiles": profiles,
                 "deadline_rounds": deadline_rounds,
+                "ponpoko_params": ponpoko_params
             }
 
             # run a single negotiation session
