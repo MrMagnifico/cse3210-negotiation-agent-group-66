@@ -1,5 +1,8 @@
 import logging
+from decimal import Decimal
+from math import isclose
 from random import randint
+from time import time_ns
 from typing import cast
 from typing import Set
 
@@ -18,26 +21,32 @@ from geniusweb.inform.Settings import Settings
 from geniusweb.inform.Voting import Voting
 from geniusweb.inform.YourTurn import YourTurn
 from geniusweb.issuevalue.Bid import Bid
-from geniusweb.issuevalue.Domain import Domain
 from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.profileconnection.ProfileConnectionFactory import ProfileConnectionFactory
 from geniusweb.progress.ProgressRounds import ProgressRounds
+from geniusweb.progress.ProgressTime import ProgressTime
 from geniusweb.utils import val
 
 from .patterns import Patterns
 
 
 class PonPokoParty(DefaultParty):
-    """Offers random bids until a bid with sufficient utility is offered."""
+    """
+    PonPoko offers bids with a randomly selected pattern each session.
+
+    Offers random bids within a particular utility value
+    range until opponent accepts a generated bid or
+    opponent offers a bid falling within the utility
+    value range.
+    """
 
     def __init__(self):
         super().__init__()
         self.getReporter().log(logging.INFO, "party is initialized")
         self._profile = None
         self._lastReceivedBid: Bid = None
-        self._turn_counter = 0
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
 
@@ -53,22 +62,28 @@ class PonPokoParty(DefaultParty):
             else:
                 self._profile = ProfileConnectionFactory.create(
                     info.getProfile().getURI(), self.getReporter())
+
         elif isinstance(info, ActionDone):
             action: Action = cast(ActionDone, info).getAction()
             if isinstance(action, Offer):
                 self._lastReceivedBid = cast(Offer, action).getBid()
+
         elif isinstance(info, YourTurn):
             self._myTurn()
             if isinstance(self._progress, ProgressRounds):
                 self._progress = self._progress.advance()
+
         elif isinstance(info, Finished):
             self.terminate()
+
         elif isinstance(info, Voting):
             # MOPAC protocol
             self._lastvotes = self._vote(cast(Voting, info))
             val(self.getConnection()).send(self._lastvotes)
+
         elif isinstance(info, OptIn):
             val(self.getConnection()).send(self._lastvotes)
+
         else:
             self.getReporter().log(logging.WARNING,
                                    "Ignoring unknown info " + str(info))
@@ -95,33 +110,44 @@ class PonPokoParty(DefaultParty):
             self._profile = None
 
     def _myTurn(self):
-        self._turn_counter += 1
-
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
-            for _attempt in range(20):
-                bid = self._getRandomBid(
-                    self._profile.getProfile().getDomain())
+            allBids = AllBidsList(self._profile.getProfile().getDomain())
+            candidate_found = False
+            high, low = self._utility_func(self._getTimeFraction(), 0.0)
+            median = (high + low) / 2
+            close_to_median = []
+
+            for _attempt in range(allBids.size()):
+                bid = allBids.get(_attempt)
+
+                # Update bids close to median utility
+                current_bid_diff = abs(
+                    self._profile.getProfile().getUtility(bid)
+                    - Decimal(median))
+                if isclose(current_bid_diff, 0, abs_tol=0.05):
+                    close_to_median.append(bid)
+
                 if self._isGood(bid):
+                    candidate_found = True
                     break
+
+            if not candidate_found:
+                bid = close_to_median[randint(0, len(close_to_median) - 1)]
             action = Offer(self._me, bid)
         self.getConnection().send(action)
 
     def _isGood(self, bid: Bid) -> bool:
-        high, low = self._utility_func(self._turn_counter, 0.0)
+        high, low = self._utility_func(self._getTimeFraction(), 0.0)
 
-        if bid is not None:
+        if bid is None:
             return False
         profile = self._profile.getProfile()
         if isinstance(profile, UtilitySpace):
             return profile.getUtility(bid) >= low and profile.getUtility(
                 bid) <= high
         raise Exception("Can not handle this type of profile")
-
-    def _getRandomBid(self, domain: Domain) -> Bid:
-        allBids = AllBidsList(domain)
-        return allBids.get(randint(0, allBids.size() - 1))
 
     def _vote(self, voting: Voting) -> Votes:
         """
@@ -139,3 +165,13 @@ class PonPokoParty(DefaultParty):
             for offer in voting.getOffers() if self._isGood(offer.getBid())
         ])
         return Votes(self._me, votes)
+
+    def _getTimeFraction(self) -> float:
+        """Calculate time value as fraction of negotiation time elapsed."""
+        elapsed_time = 0
+        if isinstance(self._progress, ProgressRounds):
+            elapsed_time = self._progress.getCurrentRound(
+            ) / self._progress.getDuration()
+        elif isinstance(self._progress, ProgressTime):
+            elapsed_time = self._progress.get(time_ns() // 1e6)
+        return elapsed_time

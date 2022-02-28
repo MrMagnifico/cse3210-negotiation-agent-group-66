@@ -21,8 +21,8 @@ tournament_settings = {
         "agents.stupid_agent.stupid_agent.StupidAgent",
         "agents.template_agent.template_agent.TemplateAgent",
         "agents.custom_agents.custom_agent_0.CustomAgent",
-        "agents.randomp.randomparty.RandomParty",
-        "agents.ponpoko.ponpoko.PonPokoParty"
+        "agents.randomp.randomparty.RandomParty.RandomParty",
+        "agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty"
     ],
     "profile_sets": [
         ["domains/domain00/profileA.json", "domains/domain00/profileB.json"],
