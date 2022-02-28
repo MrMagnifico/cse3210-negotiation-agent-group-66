@@ -2,7 +2,6 @@ import logging
 from decimal import Decimal
 from math import isclose
 from random import randint
-from socket import close
 from time import time_ns
 from typing import cast
 from typing import Set
@@ -14,7 +13,6 @@ from geniusweb.actions.Offer import Offer
 from geniusweb.actions.Vote import Vote
 from geniusweb.actions.Votes import Votes
 from geniusweb.bidspace.AllBidsList import AllBidsList
-from geniusweb.bidspace.BidsWithUtility import BidsWithUtility
 from geniusweb.inform.ActionDone import ActionDone
 from geniusweb.inform.Finished import Finished
 from geniusweb.inform.Inform import Inform
@@ -23,7 +21,6 @@ from geniusweb.inform.Settings import Settings
 from geniusweb.inform.Voting import Voting
 from geniusweb.inform.YourTurn import YourTurn
 from geniusweb.issuevalue.Bid import Bid
-from geniusweb.issuevalue.Domain import Domain
 from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
@@ -31,12 +28,18 @@ from geniusweb.profileconnection.ProfileConnectionFactory import ProfileConnecti
 from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.progress.ProgressTime import ProgressTime
 from geniusweb.utils import val
+
 from .patterns import Patterns
+
 
 class PonPokoParty(DefaultParty):
     """
-    Offers random bids within a particular utility value range until opponent accepts
-    a generated bid or opponent offers a bid falling within the utility value range.
+    PonPoko offers bids with a randomly selected pattern each session.
+
+    Offers random bids within a particular utility value
+    range until opponent accepts a generated bid or
+    opponent offers a bid falling within the utility
+    value range.
     """
 
     def __init__(self):
@@ -120,14 +123,16 @@ class PonPokoParty(DefaultParty):
                 bid = allBids.get(_attempt)
 
                 # Update bids close to median utility
-                current_bid_diff = abs(self._profile.getProfile().getUtility(bid) - Decimal(median))
+                current_bid_diff = abs(
+                    self._profile.getProfile().getUtility(bid)
+                    - Decimal(median))
                 if isclose(current_bid_diff, 0, abs_tol=0.05):
                     close_to_median.append(bid)
 
                 if self._isGood(bid):
                     candidate_found = True
                     break
-                
+
             if not candidate_found:
                 bid = close_to_median[randint(0, len(close_to_median) - 1)]
             action = Offer(self._me, bid)
@@ -135,12 +140,13 @@ class PonPokoParty(DefaultParty):
 
     def _isGood(self, bid: Bid) -> bool:
         high, low = self._utility_func(self._getTimeFraction(), 0.0)
-        
+
         if bid is None:
             return False
         profile = self._profile.getProfile()
         if isinstance(profile, UtilitySpace):
-            return profile.getUtility(bid) >= low and profile.getUtility(bid) <= high 
+            return profile.getUtility(bid) >= low and profile.getUtility(
+                bid) <= high
         raise Exception("Can not handle this type of profile")
 
     def _vote(self, voting: Voting) -> Votes:
@@ -164,7 +170,8 @@ class PonPokoParty(DefaultParty):
         """Calculate time value as fraction of negotiation time elapsed."""
         elapsed_time = 0
         if isinstance(self._progress, ProgressRounds):
-            elapsed_time = self._progress.getCurrentRound() / self._progress.getDuration()
+            elapsed_time = self._progress.getCurrentRound(
+            ) / self._progress.getDuration()
         elif isinstance(self._progress, ProgressTime):
             elapsed_time = self._progress.get(time_ns() // 1e6)
         return elapsed_time

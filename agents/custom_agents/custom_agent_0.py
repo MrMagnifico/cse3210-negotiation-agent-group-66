@@ -20,8 +20,7 @@ from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.profileconnection.ProfileConnectionFactory import (
-    ProfileConnectionFactory,
-)
+    ProfileConnectionFactory, )
 from geniusweb.progress.ProgressRounds import ProgressRounds
 
 
@@ -54,8 +53,7 @@ class CustomAgent(DefaultParty):
 
             # the profile contains the preferences of the agent over the domain
             self._profile = ProfileConnectionFactory.create(
-                info.getProfile().getURI(), self.getReporter()
-            )
+                info.getProfile().getURI(), self.getReporter())
         # ActionDone is an action send by an opponent (an offer or an accept)
         elif isinstance(info, ActionDone):
             action: Action = cast(ActionDone, info).getAction()
@@ -76,9 +74,8 @@ class CustomAgent(DefaultParty):
             # terminate the agent MUST BE CALLED
             self.terminate()
         else:
-            self.getReporter().log(
-                logging.WARNING, "Ignoring unknown info " + str(info)
-            )
+            self.getReporter().log(logging.WARNING,
+                                   "Ignoring unknown info " + str(info))
 
     # lets the geniusweb system know what settings this agent can handle
     # leave it as it is for this course
@@ -168,12 +165,12 @@ class CustomAgent(DefaultParty):
         domain = profile.getDomain()
         all_bids = AllBidsList(domain)
 
-
         # take 50 attempts at finding a random bid that is acceptable to us
         maxBid = all_bids.get(0)
 
         for _ in range(attempts):
             bid = all_bids.get(randint(1, all_bids.size() - 1))
-            maxBid = maxBid if (profile.getUtility(maxBid) > profile.getUtility(bid)) else bid
+            maxBid = maxBid if (
+                profile.getUtility(maxBid) > profile.getUtility(bid)) else bid
 
         return maxBid

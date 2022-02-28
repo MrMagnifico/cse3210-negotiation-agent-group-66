@@ -28,7 +28,8 @@ tournament_settings = {
         ["domains/domain00/profileA.json", "domains/domain00/profileB.json"],
         ["domains/domain01/profileA.json", "domains/domain01/profileB.json"],
     ],
-    "deadline_rounds": 200,
+    "deadline_rounds":
+    200,
 }
 
 # run a session and obtain results in dictionaries

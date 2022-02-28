@@ -1,7 +1,16 @@
 import logging
-from random import randint, random
+import sys
 import traceback
-from typing import cast, Dict, List, Set, Collection
+from decimal import Decimal
+from random import randint
+from random import random
+from time import sleep
+from time import time as clock
+from typing import cast
+from typing import Collection
+from typing import Dict
+from typing import List
+from typing import Set
 
 from geniusweb.actions.Accept import Accept
 from geniusweb.actions.Action import Action
@@ -24,21 +33,18 @@ from geniusweb.issuevalue.Value import Value
 from geniusweb.issuevalue.ValueSet import ValueSet
 from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
+from geniusweb.profile.utilityspace.LinearAdditive import LinearAdditive
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.profileconnection.ProfileConnectionFactory import (
-    ProfileConnectionFactory,
-)
+    ProfileConnectionFactory, )
+from geniusweb.profileconnection.ProfileInterface import ProfileInterface
+from geniusweb.progress.Progress import Progress
 from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.utils import val
-from geniusweb.profileconnection.ProfileInterface import ProfileInterface
-from geniusweb.profile.utilityspace.LinearAdditive import LinearAdditive
-from geniusweb.progress.Progress import Progress
 from tudelft.utilities.immutablelist.ImmutableList import ImmutableList
-from time import sleep, time as clock
-from decimal import Decimal
-import sys
-from agents.time_dependent_agent.extended_util_space import ExtendedUtilSpace
 from tudelft_utilities_logging.Reporter import Reporter
+
+from agents.time_dependent_agent.extended_util_space import ExtendedUtilSpace
 
 
 class CustomAgent(DefaultParty):
@@ -113,15 +119,16 @@ class CustomAgent(DefaultParty):
                     else:
                         self.getReporter().log(
                             logging.WARNING,
-                            "parameter e should be Double but found " + str(newe),
+                            "parameter e should be Double but found "
+                            + str(newe),
                         )
                 protocol: str = str(self._settings.getProtocol().getURI())
                 if "Learn" == protocol:
                     val(self.getConnection()).send(LearningDone(self._me))
                 else:
                     self._profileint = ProfileConnectionFactory.create(
-                        self._settings.getProfile().getURI(), self.getReporter()
-                    )
+                        self._settings.getProfile().getURI(),
+                        self.getReporter())
 
             elif isinstance(info, ActionDone):
                 otheract: Action = info.getAction()
@@ -131,7 +138,8 @@ class CustomAgent(DefaultParty):
                 self._delayResponse()
                 self._myTurn()
             elif isinstance(info, Finished):
-                self.getReporter().log(logging.INFO, "Final ourcome:" + str(info))
+                self.getReporter().log(logging.INFO,
+                                       "Final ourcome:" + str(info))
                 self.terminate()
                 # stop this party and free resources.
             elif isinstance(info, Voting):
@@ -140,7 +148,8 @@ class CustomAgent(DefaultParty):
             elif isinstance(info, OptIn):
                 val(self.getConnection()).send(lastvotes)
         except Exception as ex:
-            self.getReporter().log(logging.CRITICAL, "Failed to handle info", ex)
+            self.getReporter().log(logging.CRITICAL, "Failed to handle info",
+                                   ex)
         self._updateRound(info)
 
     def getE(self) -> float:
@@ -166,10 +175,11 @@ class CustomAgent(DefaultParty):
     def getDescription(self) -> str:
         return (
             "Time-dependent conceder. Aims at utility u(t) = scale * t^(1/e) "
-            + "where t is the time (0=start, 1=end), e is the concession speed parameter (default 1.1), and scale such that u(0)=minimum and "
-            + "u(1) = maximum possible utility. Parameters minPower (default 1) and maxPower (default infinity) are used "
-            + "when voting"
-        )
+            +
+            "where t is the time (0=start, 1=end), e is the concession speed parameter (default 1.1), and scale such that u(0)=minimum and "
+            +
+            "u(1) = maximum possible utility. Parameters minPower (default 1) and maxPower (default infinity) are used "
+            + "when voting")
 
     # Override
     def terminate(self):
@@ -209,11 +219,9 @@ class CustomAgent(DefaultParty):
         bid = self._makeBid()
 
         myAction: Action
-        if bid == None or (
-            self._lastReceivedBid != None
-            and self._utilspace.getUtility(self._lastReceivedBid)
-            >= self._utilspace.getUtility(bid)
-        ):
+        if bid == None or (self._lastReceivedBid != None and
+                           self._utilspace.getUtility(self._lastReceivedBid) >=
+                           self._utilspace.getUtility(bid)):
             # if bid==null we failed to suggest next bid.
             myAction = Accept(self._me, self._lastReceivedBid)
         else:
@@ -247,9 +255,8 @@ class CustomAgent(DefaultParty):
         # pick a random one.
         return options.get(randint(0, options.size() - 1))
 
-    def _getUtilityGoal(
-        self, t: float, e: float, minUtil: Decimal, maxUtil: Decimal
-    ) -> Decimal:
+    def _getUtilityGoal(self, t: float, e: float, minUtil: Decimal,
+                        maxUtil: Decimal) -> Decimal:
         """
         @param t       the time in [0,1] where 0 means start of nego and 1 the
                        end of nego (absolute time/round limit)
@@ -264,8 +271,10 @@ class CustomAgent(DefaultParty):
 
         ft1 = Decimal(1)
         if e != 0:
-            ft1 = round(Decimal(1 - pow(t, 1 / e)), 6)  # defaults ROUND_HALF_UP
-        return max(min((minUtil + (maxUtil - minUtil) * ft1), maxUtil), minUtil)
+            ft1 = round(Decimal(1 - pow(t, 1 / e)),
+                        6)  # defaults ROUND_HALF_UP
+        return max(min((minUtil + (maxUtil - minUtil) * ft1), maxUtil),
+                   minUtil)
 
     def _vote(self, voting: Voting) -> Votes:  # throws IOException
         """
@@ -311,6 +320,7 @@ class CustomAgent(DefaultParty):
 
         @throws InterruptedException
         """
-        delay = self._settings.getParameters().getDouble("delay", 0, 0, 10000000)
+        delay = self._settings.getParameters().getDouble(
+            "delay", 0, 0, 10000000)
         if delay > 0:
             sleep(delay * (0.5 + random()))

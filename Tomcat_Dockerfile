@@ -5,10 +5,10 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
-WORKDIR /usr/src/party/randomp
+WORKDIR /usr/src/party/agents/randomp
 RUN python3 setup.py sdist
 
-WORKDIR /usr/src/party/ponpokoagent
+WORKDIR /usr/src/party/agents/ponpokoagent
 RUN python3 setup.py sdist
 
 FROM tomcat:8

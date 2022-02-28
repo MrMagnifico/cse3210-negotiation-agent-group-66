@@ -1,4 +1,4 @@
-# Negotiating Agent 
+# Negotiating Agent
 
 Negotiating agent created for the course 'Collaborating Artificial Intelligence' (CSE3210).
 

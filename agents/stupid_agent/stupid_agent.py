@@ -1,8 +1,9 @@
 import json
 import logging
 import sys
-from typing import Dict, Any
+from typing import Any
 from typing import cast
+from typing import Dict
 
 from geniusweb.actions.Accept import Accept
 from geniusweb.actions.Action import Action
@@ -57,15 +58,14 @@ class StupidAgent(DefaultParty):
         elif isinstance(info, Finished):
             self.terminate()
         else:
-            self.getReporter().log(
-                logging.WARNING, "Ignoring unknown info " + str(info)
-            )
+            self.getReporter().log(logging.WARNING,
+                                   "Ignoring unknown info " + str(info))
 
     # Override
     def getCapabilities(self):  # -> Capabilities
         return Capabilities(
-            set(["SAOP"]), set(["geniusweb.profile.utilityspace.LinearAdditive"])
-        )
+            set(["SAOP"]),
+            set(["geniusweb.profile.utilityspace.LinearAdditive"]))
 
     # Override
     def getDescription(self):

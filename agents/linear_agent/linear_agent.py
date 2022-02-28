@@ -1,5 +1,6 @@
-from agents.time_dependent_agent.time_dependent_agent import TimeDependentAgent
 from tudelft_utilities_logging.Reporter import Reporter
+
+from agents.time_dependent_agent.time_dependent_agent import TimeDependentAgent
 
 
 class LinearAgent(TimeDependentAgent):
@@ -14,8 +15,8 @@ class LinearAgent(TimeDependentAgent):
     # Override
     def getDescription(self) -> str:
         return (
-            "Linear: concedes linearly with time. "
-            + "Parameters minPower (default 1) and maxPower (default infinity) are used when voting"
+            "Linear: concedes linearly with time. " +
+            "Parameters minPower (default 1) and maxPower (default infinity) are used when voting"
         )
 
     # Override

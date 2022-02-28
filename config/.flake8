@@ -13,6 +13,7 @@ ignore =
 max-line-length = 89
 max-complexity = 18
 
+exclude=['run*', 'agents/boulware_agent', 'agents/conceder_agent', 'agents/custom_agents', 'agents/hardliner_agent,' 'agents/linear_agent', 'agents/random_agent', 'agents/randomp', 'agents/stupid_agent', 'agents/template_agent', 'agents/time_dependent_agent']
 # Select the formatter used to display errors to the user.
 format = default
 count = True
