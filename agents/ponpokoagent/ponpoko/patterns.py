@@ -50,21 +50,22 @@ class Patterns:
     _patterns = [pattern_1, pattern_2, pattern_3, pattern_5]
     _conceder_patterns = []
     _hardliner_patterns = []
+    _opponent = ""
 
     def __init__(self, random):
         """Creates the pattern generator."""
         self._random = random
         self._index = 0
 
-    def __next__(self, opponent: str):
+    def __next__(self):
         """Generates a function which returns a pair with the utility values."""
         if self._random:
             return _generate_pattern((random(), random()),
                                      (random(), random()))
-        if opponent == "conceder":
+        if self._opponent == "conceder":
             self._index = randint(0, len(self._conceder_patterns) - 1)
             self._conceder_patterns[self._index]
-        elif opponent == "hardliner":
+        elif self._opponent == "hardliner":
             self._index = randint(0, len(self._hardliner_patterns) - 1)
             self._hardliner_patterns[self._index]
         
