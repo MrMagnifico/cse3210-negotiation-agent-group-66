@@ -130,31 +130,7 @@ class PonPokoParty(DefaultParty):
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
-            allBids = AllBidsList(self._profile.getProfile().getDomain())
-            candidate_found = False
-            high, low = self._utility_func(self._getTimeFraction(), 1.0)
-            self.getReporter().log(logging.INFO,
-                                   f"Utility range [{low}, {high}]")
-
-            median = (high + low) / 2
-            close_to_median = []
-
-            for _attempt in range(allBids.size()):
-                bid = allBids.get(_attempt)
-
-                # Update bids close to median utility
-                current_bid_diff = abs(
-                    self._profile.getProfile().getUtility(bid)
-                    - Decimal(median))
-                if isclose(current_bid_diff, 0, abs_tol=0.05):
-                    close_to_median.append(bid)
-
-                if self._isGood(bid):
-                    candidate_found = True
-                    break
-
-            if not candidate_found:
-                bid = close_to_median[randint(0, len(close_to_median) - 1)]
+            bid = self.getBid()
             action = Offer(self._me, bid)
         self.getConnection().send(action)
 
@@ -168,6 +144,35 @@ class PonPokoParty(DefaultParty):
             return profile.getUtility(bid) >= low and profile.getUtility(
                 bid) <= high
         raise Exception("Can not handle this type of profile")
+
+    def getBid(self):
+        allBids = AllBidsList(self._profile.getProfile().getDomain())
+        candidate_found = False
+        high, low = self._utility_func(self._getTimeFraction(), 1.0)
+        self.getReporter().log(logging.INFO,
+                                f"Utility range [{low}, {high}]")
+
+        median = (high + low) / 2
+        close_to_median = []
+
+        for _attempt in range(allBids.size()):
+            bid = allBids.get(_attempt)
+
+            # Update bids close to median utility
+            current_bid_diff = abs(
+                self._profile.getProfile().getUtility(bid)
+                - Decimal(median))
+            if isclose(current_bid_diff, 0, abs_tol=0.05):
+                close_to_median.append(bid)
+
+            if self._isGood(bid):
+                candidate_found = True
+                break
+
+        if not candidate_found:
+            bid = close_to_median[randint(0, len(close_to_median) - 1)]
+        return bid
+
 
     def _vote(self, voting: Voting) -> Votes:
         """
