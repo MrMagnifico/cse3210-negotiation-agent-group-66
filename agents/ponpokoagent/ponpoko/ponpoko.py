@@ -3,7 +3,7 @@ from decimal import Decimal
 from math import isclose
 from random import randint
 from time import time_ns
-from typing import cast
+from typing import Dict, cast
 from typing import Set
 
 from geniusweb.actions.Accept import Accept
@@ -21,6 +21,8 @@ from geniusweb.inform.Settings import Settings
 from geniusweb.inform.Voting import Voting
 from geniusweb.inform.YourTurn import YourTurn
 from geniusweb.issuevalue.Bid import Bid
+from geniusweb.issuevalue.Domain import Domain
+from geniusweb.opponentmodel.FrequencyOpponentModel import FrequencyOpponentModel
 from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
@@ -48,6 +50,8 @@ class PonPokoParty(DefaultParty):
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
+        self._receivedBids = []
+        self._moveCounts: Dict[str, int] = {}
 
     # Override
     def notifyChange(self, info: Inform):
@@ -127,6 +131,7 @@ class PonPokoParty(DefaultParty):
         else:
             self._pattern_change_count -= 1
 
+        self._updateMoves()
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
@@ -173,7 +178,17 @@ class PonPokoParty(DefaultParty):
             bid = close_to_median[randint(0, len(close_to_median) - 1)]
         return bid
 
+    def _updateMoves(self):
+        if len(self._receivedBids) == 0:
+            self._receivedBids.append(self._lastReceivedBid)
+        else:
+            util = lambda bid : self._profile.getProfile().getUtility(bid)
+            if util(self._lastReceivedBid) > util(self._receivedBids[-1]):
+                self._moveCounts["conceder"] += 1
+            elif util(self._lastReceivedBid) < util(self._receivedBids[-1]):
+                self._moveCounts["hardliner"] += 1
 
+                
     def _vote(self, voting: Voting) -> Votes:
         """
         @param voting the {@link Voting} object containing the options.
