@@ -33,6 +33,10 @@ pattern_2 = _generate_pattern((0.1, 0), (0.22, 0))
 pattern_3 = _generate_pattern((0.1, 0), (0.15, 20))
 pattern_5 = _generate_pattern((0.15, 20), (0.21, 20), op_one=mul, op_two=mul)
 
+hardliner_pattern_1 = _generate_pattern((0.01, 0), (0.01, 25))
+
+conceder_pattern_1 = _generate_pattern((0.25, 0), (0.25, 25))
+
 
 def pattern_4(t: float, iftime: float):
     """Applies the fourth pattern."""
@@ -48,8 +52,8 @@ class Patterns:
     """An iterator which generates different patterns."""
 
     _patterns = [pattern_1, pattern_2, pattern_3, pattern_5]
-    _conceder_patterns = []
-    _hardliner_patterns = []
+    _conceder_patterns = [conceder_pattern_1]
+    _hardliner_patterns = [hardliner_pattern_1]
     _opponent = ""
 
     def __init__(self, random):
