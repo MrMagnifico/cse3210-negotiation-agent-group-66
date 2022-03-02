@@ -51,7 +51,7 @@ class PonPokoParty(DefaultParty):
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
         self._receivedBids = []
-        self._moveCounts: Dict[str, int] = {}
+        self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0}
 
     # Override
     def notifyChange(self, info: Inform):
@@ -188,7 +188,7 @@ class PonPokoParty(DefaultParty):
             elif util(self._lastReceivedBid) < util(self._receivedBids[-1]):
                 self._moveCounts["hardliner"] += 1
 
-                
+
     def _vote(self, voting: Voting) -> Votes:
         """
         @param voting the {@link Voting} object containing the options.
