@@ -131,7 +131,7 @@ class PonPokoParty(DefaultParty):
         else:
             self._pattern_change_count -= 1
 
-        self._updateMoves()
+        self._updateMoves(0.25)
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
@@ -178,14 +178,14 @@ class PonPokoParty(DefaultParty):
             bid = close_to_median[randint(0, len(close_to_median) - 1)]
         return bid
 
-    def _updateMoves(self):
+    def _updateMoves(self, epsilon):
         if len(self._receivedBids) == 0:
             self._receivedBids.append(self._lastReceivedBid)
         else:
             util = lambda bid : self._profile.getProfile().getUtility(bid)
-            if util(self._lastReceivedBid) > util(self._receivedBids[-1]):
+            if (util(self._lastReceivedBid) - util(self._receivedBids[-1])) > epsilon:
                 self._moveCounts["conceder"] += 1
-            elif util(self._lastReceivedBid) < util(self._receivedBids[-1]):
+            elif (util(self._lastReceivedBid) - util(self._receivedBids[-1])) < epsilon:
                 self._moveCounts["hardliner"] += 1
 
 
