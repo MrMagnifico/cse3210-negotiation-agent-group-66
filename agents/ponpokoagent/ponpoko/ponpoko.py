@@ -31,7 +31,6 @@ from geniusweb.utils import val
 
 from .patterns import Patterns
 
-
 class PonPokoParty(DefaultParty):
     """
     PonPoko offers bids with a randomly selected pattern each session.
@@ -44,11 +43,11 @@ class PonPokoParty(DefaultParty):
 
     def __init__(self):
         super().__init__()
-        self.getReporter().log(logging.INFO, "party is initialized")
         self._profile = None
         self._lastReceivedBid: Bid = None
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
+        self._PATTERN_CHANGE_FREQUENCY = -1
 
     # Override
     def notifyChange(self, info: Inform):
@@ -57,6 +56,14 @@ class PonPokoParty(DefaultParty):
             self._me = self._settings.getID()
             self._protocol: str = str(self._settings.getProtocol().getURI())
             self._progress = self._settings.getProgress()
+            
+            if self._settings.getParameters().containsKey("patternChangeFrequency"):
+                self._PATTERN_CHANGE_FREQUENCY = int(self._settings.getParameters().get("patternChangeFrequency"))
+                self.getReporter().log(
+                    logging.INFO,
+                    f"Pattern change frequency set to {self._PATTERN_CHANGE_FREQUENCY}")
+            self._pattern_change_count = self._PATTERN_CHANGE_FREQUENCY
+
             if "Learn" == self._protocol:
                 self.getConnection().send(LearningDone(self._me))  #type:ignore
             else:
@@ -110,12 +117,25 @@ class PonPokoParty(DefaultParty):
             self._profile = None
 
     def _myTurn(self):
+        if self._pattern_change_count == 0:
+            self.getReporter().log(
+                logging.INFO,
+                f"Changing utility function to {self._utility_generator._index}"
+            )
+            self._utility_func = next(self._utility_generator)
+            self._pattern_change_count = self._PATTERN_CHANGE_FREQUENCY
+        else:
+            self._pattern_change_count -= 1
+
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
             allBids = AllBidsList(self._profile.getProfile().getDomain())
             candidate_found = False
-            high, low = self._utility_func(self._getTimeFraction(), 0.0)
+            high, low = self._utility_func(self._getTimeFraction(), 1.0)
+            self.getReporter().log(logging.INFO,
+                                   f"Utility range [{low}, {high}]")
+
             median = (high + low) / 2
             close_to_median = []
 
