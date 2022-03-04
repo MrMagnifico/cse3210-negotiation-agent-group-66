@@ -52,6 +52,7 @@ class PonPokoParty(DefaultParty):
         self._PATTERN_CHANGE_FREQUENCY = -1
         self._receivedBids = []
         self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0}
+        self._opponentModeled = False
 
     # Override
     def notifyChange(self, info: Inform):
@@ -73,6 +74,7 @@ class PonPokoParty(DefaultParty):
             else:
                 self._profile = ProfileConnectionFactory.create(
                     info.getProfile().getURI(), self.getReporter())
+            self._opponentModeled = False
 
         elif isinstance(info, ActionDone):
             action: Action = cast(ActionDone, info).getAction()
@@ -153,7 +155,10 @@ class PonPokoParty(DefaultParty):
     def getBid(self):
         allBids = AllBidsList(self._profile.getProfile().getDomain())
         candidate_found = False
-        self._utility_generator._opponent = max(self._moveCounts, key=self._moveCounts.get)
+        if not self._opponentModeled:
+            self._utility_generator._opponent = max(self._moveCounts, key=self._moveCounts.get)
+            self._utility_func = next(self._utility_generator)
+            self._opponentModeled = True
         high, low = self._utility_func(self._getTimeFraction(), 1.0)
         self.getReporter().log(logging.INFO,
                                 f"Utility range [{low}, {high}]")
