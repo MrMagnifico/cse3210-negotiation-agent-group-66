@@ -110,11 +110,10 @@ class Patterns:
     _hardliner_patterns = [hardliner_pattern_1]
     _opponent = ""
 
-    def __init__(self, random):
+    def __init__(self, type_):
         """Creates the pattern generator."""
-        self._random = random
         self._index = 0
-        self._type = PatternGeneratorType.Mutation
+        self._type = type_
 
     def __next__(self):
         """Generates a function which returns a pair with the utility value."""

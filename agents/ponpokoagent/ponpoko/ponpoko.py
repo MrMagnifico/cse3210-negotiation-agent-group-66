@@ -30,6 +30,7 @@ from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.progress.ProgressTime import ProgressTime
 from geniusweb.utils import val
 
+from .patterns import PatternGeneratorType
 from .patterns import Patterns
 
 
@@ -47,7 +48,7 @@ class PonPokoParty(DefaultParty):
         super().__init__()
         self._profile = None
         self._lastReceivedBid: Bid = None
-        self._utility_generator = Patterns(False)
+        self._utility_generator = Patterns(PatternGeneratorType.Standard)
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
         self._receivedBids = []
@@ -63,6 +64,10 @@ class PonPokoParty(DefaultParty):
             self._protocol: str = str(self._settings.getProtocol().getURI())
             self._progress = self._settings.getProgress()
 
+            if self._settings.getParameters().containsKey("generatorType"):
+                var = int(self._settings.getParameters().get("generatorType"))
+                self._utility_generator._type = PatternGeneratorType(var)
+                self.getReporter().log(logging.INFO, f"Generator type {var}")
             if self._settings.getParameters().containsKey(
                     "patternChangeFrequency"):
                 self._PATTERN_CHANGE_FREQUENCY = int(

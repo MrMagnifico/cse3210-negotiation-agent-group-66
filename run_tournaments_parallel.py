@@ -1,7 +1,7 @@
-from multiprocessing import Process
-from cgi import test
 import json
 import os
+from cgi import test
+from multiprocessing import Process
 
 from utils.runners import run_tournament
 from utils.summary_info import print_party_data
@@ -32,32 +32,42 @@ tournament_settings = {
     "ponpoko_params": {
         "patternChangeFrequency": -1
     },
-    "no_warning": 1
-} 
+    "no_warning":
+    1
+}
 
-def run_test_tournament(tournament_settings, test_freq, test_sample):
+
+def run_test_tournament(tournament_settings, test_freq, gen_type, test_sample):
     tournament_settings["ponpoko_params"]["patternChangeFrequency"] = test_freq
+    tournament_settings["ponpoko_params"]["generatorType"] = gen_type
 
     # run a session and obtain results in dictionaries
     tournament, results_summaries = run_tournament(tournament_settings)
 
     # save the tournament settings for reference
-    with open(f"results/tournament-test-({test_freq})-({test_sample}).json", "w") as f:
+    with open(f"results/tournament-test-({test_freq})-({test_sample}).json",
+              "w") as f:
         f.write(json.dumps(tournament, indent=2))
     # save the result summaries
-    with open(f"results/results_summaries-test-({test_freq})-({test_sample}).json", "w") as f:
+    with open(
+            f"results/results_summaries-test-({test_freq})-({test_sample}).json",
+            "w") as f:
         f.write(json.dumps(results_summaries, indent=2))
+
 
 def analyse_ponpoko_results(test_frequencies, test_samples):
     print("+++++++++++++++ PONPOKO RESULTS ANALYSIS +++++++++++++++")
     for curr_freq in test_frequencies:
         for curr_sample in range(test_samples):
-            print(f"++++++++++ FREQUENCY {curr_freq} - SAMPLE {curr_sample} ++++++++++")
+            print(
+                f"++++++++++ FREQUENCY {curr_freq} - SAMPLE {curr_sample} ++++++++++"
+            )
             file_name = f"results/results_summaries-test-({curr_freq})-({curr_sample}).json"
             with open(file_name) as file:
                 content = ''.join(file.readlines())
                 data = json.JSONDecoder().decode(content)
                 print_party_data(data, "PonPokoParty")
+
 
 if __name__ == "__main__":
     # create results directory if it does not exist
@@ -66,15 +76,18 @@ if __name__ == "__main__":
 
     test_frequencies = [-1]
     test_samples = 5
-
+    test_types = range(1, 6)
     process_list = []
-    for curr_freq in test_frequencies:
-        for curr_sample in range(test_samples):
-            test_process = Process(
-                target=run_test_tournament,
-                args=(tournament_settings, curr_freq, curr_sample))
-            test_process.start()
-            process_list.append(test_process)
+
+    for type_ in test_types:
+        for curr_freq in test_frequencies:
+            for curr_sample in range(test_samples):
+                test_process = Process(target=run_test_tournament,
+                                       args=(tournament_settings, curr_freq,
+                                             type_, curr_sample))
+                test_process.start()
+                process_list.append(test_process)
+
     for process in process_list:
         process.join()
 
