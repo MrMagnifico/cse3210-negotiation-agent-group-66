@@ -87,6 +87,10 @@ pattern_5 = _generate_pattern(pattern_values[3][0],
                               op_one=mul,
                               op_two=mul)
 
+hardliner_pattern_1 = _generate_pattern((0.01, 0), (0.01, 25))
+
+conceder_pattern_1 = _generate_pattern((0.25, 0), (0.25, 25))
+
 
 def pattern_4(t: float, iftime: float):
     """Applies the fourth pattern."""
@@ -102,6 +106,9 @@ class Patterns:
     """An iterator which generates different patterns."""
 
     _patterns = [pattern_1, pattern_2, pattern_3, pattern_5]
+    _conceder_patterns = [conceder_pattern_1]
+    _hardliner_patterns = [hardliner_pattern_1]
+    _opponent = ""
 
     def __init__(self, random):
         """Creates the pattern generator."""
@@ -110,20 +117,27 @@ class Patterns:
         self._type = PatternGeneratorType.Mutation
 
     def __next__(self):
-        """Generates a function which returns a pair with the utility values."""
+        """Generates a function which returns a pair with the utility value."""
         if self._type == PatternGeneratorType.Standard:
             self._index = randint(0, len(self._patterns) - 1)
             return self._patterns[self._index]
+        elif self._type == PatternGeneratorType.Opponent:
+            if self._opponent == "conceder":
+                self._index = randint(0, len(self._conceder_patterns) - 1)
+                return self._conceder_patterns[self._index]
+            elif self._opponent == "hardliner":
+                self._index = randint(0, len(self._hardliner_patterns) - 1)
+                return self._hardliner_patterns[self._index]
         elif self._type == PatternGeneratorType.Random:
             one = (uniform(0.01, 0.15), randint(0, 20))
             two = (uniform(0.01, 0.35), randint(0, 80))
             print(one, two)
             return _generate_pattern(one, two)
-        elif self._type == PatternGeneratorType.Operation:
-            self._index = randint(0, len(self._patterns) - 1)
-            a, b = pattern_values[self._index]
-            return _mutate_pattern(a, b)
         elif self._type == PatternGeneratorType.Mutation:
             one = (uniform(0.01, 0.15), randint(0, 20))
             two = (uniform(0.01, 0.35), randint(0, 80))
             return _mutate_pattern(one, two)
+        elif self._type == PatternGeneratorType.Operation:
+            self._index = randint(0, len(self._patterns) - 1)
+            a, b = pattern_values[self._index]
+            return _mutate_pattern(a, b)
