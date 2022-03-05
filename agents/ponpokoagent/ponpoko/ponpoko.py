@@ -51,8 +51,9 @@ class PonPokoParty(DefaultParty):
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
         self._receivedBids = []
-        self._opponentEpsilon = -1
-        self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0}
+        self._opponentEpsilonHigher = -1
+        self._opponentEpsilonLower = -1
+        self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0, "neutral": 0}
         self._opponentModeled = False
 
     # Override
@@ -133,8 +134,8 @@ class PonPokoParty(DefaultParty):
             self._pattern_change_count = self._PATTERN_CHANGE_FREQUENCY
         else:
             self._pattern_change_count -= 1
-        if self._opponentEpsilon != -1:
-            self._updateMoves(0.25)
+        if self._opponentEpsilonHigher != -1 and self._opponentEpsilonLower != -1:
+            self._updateMoves(self._opponentEpsilonHigher, self._opponentEpsilonLower)
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
@@ -156,7 +157,7 @@ class PonPokoParty(DefaultParty):
     def _getBid(self):
         allBids = AllBidsList(self._profile.getProfile().getDomain())
         candidate_found = False
-        if self._opponentEpsilon != -1 and self._getTimeFraction() >= 0.3:
+        if self._opponentEpsilonHigher != -1 and self._opponentEpsilonLower != -1 and self._getTimeFraction() >= 0.3:
             self._utility_generator._opponent = max(self._moveCounts, key=self._moveCounts.get)
             self._utility_func = next(self._utility_generator)
         high, low = self._utility_func(self._getTimeFraction(), 1.0)
@@ -184,15 +185,18 @@ class PonPokoParty(DefaultParty):
             bid = close_to_median[randint(0, len(close_to_median) - 1)]
         return bid
 
-    def _updateMoves(self, epsilon):
+    def _updateMoves(self, epsilonHigher, epsilonLower):
         if len(self._receivedBids) == 0:
             self._receivedBids.append(self._lastReceivedBid)
         else:
+            self._receivedBids.append(self._lastReceivedBid)
             util = lambda bid : self._profile.getProfile().getUtility(bid)
-            if (util(self._lastReceivedBid) - util(self._receivedBids[-1])) > epsilon:
+            if (util(self._lastReceivedBid) - util(self._receivedBids[-1])) > epsilonHigher:
                 self._moveCounts["conceder"] += 1
-            elif (util(self._lastReceivedBid) - util(self._receivedBids[-1])) < epsilon:
+            elif (util(self._lastReceivedBid) - util(self._receivedBids[-1])) < epsilonLower:
                 self._moveCounts["hardliner"] += 1
+            else:
+                self._moveCounts["neutral"] += 1
 
 
     def _vote(self, voting: Voting) -> Votes:
