@@ -1,4 +1,4 @@
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 from cgi import test
 import json
 import os
@@ -67,7 +67,6 @@ if __name__ == "__main__":
     test_frequencies = [-1]
     test_samples = 5
 
-    queue = Queue()
     process_list = []
     for curr_freq in test_frequencies:
         for curr_sample in range(test_samples):
