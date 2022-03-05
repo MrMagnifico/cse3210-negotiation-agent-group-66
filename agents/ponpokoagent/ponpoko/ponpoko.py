@@ -138,7 +138,7 @@ class PonPokoParty(DefaultParty):
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
-            bid = self.getBid()
+            bid = self._getBid()
             action = Offer(self._me, bid)
         self.getConnection().send(action)
 
