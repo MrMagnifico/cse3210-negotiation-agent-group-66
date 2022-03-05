@@ -51,6 +51,7 @@ class PonPokoParty(DefaultParty):
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
         self._receivedBids = []
+        self._opponentEpsilon = -1
         self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0}
         self._opponentModeled = False
 
@@ -132,8 +133,8 @@ class PonPokoParty(DefaultParty):
             self._pattern_change_count = self._PATTERN_CHANGE_FREQUENCY
         else:
             self._pattern_change_count -= 1
-
-        self._updateMoves(0.25)
+        if self._opponentEpsilon != -1:
+            self._updateMoves(0.25)
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
@@ -152,13 +153,12 @@ class PonPokoParty(DefaultParty):
                 bid) <= high
         raise Exception("Can not handle this type of profile")
 
-    def getBid(self):
+    def _getBid(self):
         allBids = AllBidsList(self._profile.getProfile().getDomain())
         candidate_found = False
-        if not self._opponentModeled:
+        if self._opponentEpsilon != -1:
             self._utility_generator._opponent = max(self._moveCounts, key=self._moveCounts.get)
             self._utility_func = next(self._utility_generator)
-            self._opponentModeled = True
         high, low = self._utility_func(self._getTimeFraction(), 1.0)
         self.getReporter().log(logging.INFO,
                                 f"Utility range [{low}, {high}]")
