@@ -156,7 +156,7 @@ class PonPokoParty(DefaultParty):
     def _getBid(self):
         allBids = AllBidsList(self._profile.getProfile().getDomain())
         candidate_found = False
-        if self._opponentEpsilon != -1:
+        if self._opponentEpsilon != -1 and self._getTimeFraction() >= 0.3:
             self._utility_generator._opponent = max(self._moveCounts, key=self._moveCounts.get)
             self._utility_func = next(self._utility_generator)
         high, low = self._utility_func(self._getTimeFraction(), 1.0)
