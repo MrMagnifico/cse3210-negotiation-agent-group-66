@@ -3,7 +3,7 @@ from decimal import Decimal
 from math import isclose
 from random import randint
 from time import time_ns
-from typing import cast
+from typing import Dict, cast
 from typing import Set
 
 from geniusweb.actions.Accept import Accept
@@ -21,6 +21,8 @@ from geniusweb.inform.Settings import Settings
 from geniusweb.inform.Voting import Voting
 from geniusweb.inform.YourTurn import YourTurn
 from geniusweb.issuevalue.Bid import Bid
+from geniusweb.issuevalue.Domain import Domain
+from geniusweb.opponentmodel.FrequencyOpponentModel import FrequencyOpponentModel
 from geniusweb.party.Capabilities import Capabilities
 from geniusweb.party.DefaultParty import DefaultParty
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
@@ -48,6 +50,10 @@ class PonPokoParty(DefaultParty):
         self._utility_generator = Patterns(False)
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
+        self._receivedBids = []
+        self._opponentEpsilon = -1
+        self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0}
+        self._opponentModeled = False
 
     # Override
     def notifyChange(self, info: Inform):
@@ -69,6 +75,7 @@ class PonPokoParty(DefaultParty):
             else:
                 self._profile = ProfileConnectionFactory.create(
                     info.getProfile().getURI(), self.getReporter())
+            self._opponentModeled = False
 
         elif isinstance(info, ActionDone):
             action: Action = cast(ActionDone, info).getAction()
@@ -126,35 +133,12 @@ class PonPokoParty(DefaultParty):
             self._pattern_change_count = self._PATTERN_CHANGE_FREQUENCY
         else:
             self._pattern_change_count -= 1
-
+        if self._opponentEpsilon != -1:
+            self._updateMoves(0.25)
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
-            allBids = AllBidsList(self._profile.getProfile().getDomain())
-            candidate_found = False
-            high, low = self._utility_func(self._getTimeFraction(), 1.0)
-            self.getReporter().log(logging.INFO,
-                                   f"Utility range [{low}, {high}]")
-
-            median = (high + low) / 2
-            close_to_median = []
-
-            for _attempt in range(allBids.size()):
-                bid = allBids.get(_attempt)
-
-                # Update bids close to median utility
-                current_bid_diff = abs(
-                    self._profile.getProfile().getUtility(bid)
-                    - Decimal(median))
-                if isclose(current_bid_diff, 0, abs_tol=0.05):
-                    close_to_median.append(bid)
-
-                if self._isGood(bid):
-                    candidate_found = True
-                    break
-
-            if not candidate_found:
-                bid = close_to_median[randint(0, len(close_to_median) - 1)]
+            bid = self.getBid()
             action = Offer(self._me, bid)
         self.getConnection().send(action)
 
@@ -168,6 +152,48 @@ class PonPokoParty(DefaultParty):
             return profile.getUtility(bid) >= low and profile.getUtility(
                 bid) <= high
         raise Exception("Can not handle this type of profile")
+
+    def _getBid(self):
+        allBids = AllBidsList(self._profile.getProfile().getDomain())
+        candidate_found = False
+        if self._opponentEpsilon != -1 and self._getTimeFraction() >= 0.3:
+            self._utility_generator._opponent = max(self._moveCounts, key=self._moveCounts.get)
+            self._utility_func = next(self._utility_generator)
+        high, low = self._utility_func(self._getTimeFraction(), 1.0)
+        self.getReporter().log(logging.INFO,
+                                f"Utility range [{low}, {high}]")
+
+        median = (high + low) / 2
+        close_to_median = []
+
+        for _attempt in range(allBids.size()):
+            bid = allBids.get(_attempt)
+
+            # Update bids close to median utility
+            current_bid_diff = abs(
+                self._profile.getProfile().getUtility(bid)
+                - Decimal(median))
+            if isclose(current_bid_diff, 0, abs_tol=0.05):
+                close_to_median.append(bid)
+
+            if self._isGood(bid):
+                candidate_found = True
+                break
+
+        if not candidate_found:
+            bid = close_to_median[randint(0, len(close_to_median) - 1)]
+        return bid
+
+    def _updateMoves(self, epsilon):
+        if len(self._receivedBids) == 0:
+            self._receivedBids.append(self._lastReceivedBid)
+        else:
+            util = lambda bid : self._profile.getProfile().getUtility(bid)
+            if (util(self._lastReceivedBid) - util(self._receivedBids[-1])) > epsilon:
+                self._moveCounts["conceder"] += 1
+            elif (util(self._lastReceivedBid) - util(self._receivedBids[-1])) < epsilon:
+                self._moveCounts["hardliner"] += 1
+
 
     def _vote(self, voting: Voting) -> Votes:
         """
