@@ -48,7 +48,7 @@ class PonPokoParty(DefaultParty):
         super().__init__()
         self._profile = None
         self._lastReceivedBid: Bid = None
-        self._utility_generator = Patterns(PatternGeneratorType.Standard)
+        self._utility_generator = Patterns(PatternGeneratorType.Opponent)
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_FREQUENCY = -1
         self._receivedBids = []
@@ -190,7 +190,10 @@ class PonPokoParty(DefaultParty):
                 break
 
         if not candidate_found:
-            bid = close_to_median[randint(0, len(close_to_median) - 1)]
+            try:
+                bid = close_to_median[randint(0, len(close_to_median) - 1)]
+            except ValueError:
+                pass
         return bid
 
     def _updateMoves(self, epsilon):

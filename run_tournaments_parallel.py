@@ -12,15 +12,15 @@ from utils.summary_info import print_party_data
 #   We need to specify a deadline of amount of rounds we can negotiate before we end without agreement
 tournament_settings = {
     "agents": [
-        "agents.boulware_agent.boulware_agent.BoulwareAgent",
-        "agents.conceder_agent.conceder_agent.ConcederAgent",
-        "agents.hardliner_agent.hardliner_agent.HardlinerAgent",
-        "agents.linear_agent.linear_agent.LinearAgent",
+        #        "agents.boulware_agent.boulware_agent.BoulwareAgent",
+        #        "agents.conceder_agent.conceder_agent.ConcederAgent",
+        #        "agents.hardliner_agent.hardliner_agent.HardlinerAgent",
+        #        "agents.linear_agent.linear_agent.LinearAgent",
         "agents.random_agent.random_agent.RandomAgent",
-        "agents.stupid_agent.stupid_agent.StupidAgent",
-        "agents.template_agent.template_agent.TemplateAgent",
-        "agents.custom_agents.custom_agent_0.CustomAgent",
-        "agents.randomp.randomparty.RandomParty.RandomParty",
+        #        "agents.stupid_agent.stupid_agent.StupidAgent",
+        #        "agents.template_agent.template_agent.TemplateAgent",
+        #        "agents.custom_agents.custom_agent_0.CustomAgent",
+        #        "agents.randomp.randomparty.RandomParty.RandomParty",
         "agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty"
     ],
     "profile_sets": [
@@ -50,23 +50,24 @@ def run_test_tournament(tournament_settings, test_freq, gen_type, test_sample):
         f.write(json.dumps(tournament, indent=2))
     # save the result summaries
     with open(
-            f"results/results_summaries-test-({test_freq})-({test_sample}).json",
+            f"results/results_summaries-test-({test_freq})-({gen_type})-({test_sample}).json",
             "w") as f:
         f.write(json.dumps(results_summaries, indent=2))
 
 
 def analyse_ponpoko_results(test_frequencies, test_samples):
     print("+++++++++++++++ PONPOKO RESULTS ANALYSIS +++++++++++++++")
-    for curr_freq in test_frequencies:
-        for curr_sample in range(test_samples):
-            print(
-                f"++++++++++ FREQUENCY {curr_freq} - SAMPLE {curr_sample} ++++++++++"
-            )
-            file_name = f"results/results_summaries-test-({curr_freq})-({curr_sample}).json"
-            with open(file_name) as file:
-                content = ''.join(file.readlines())
-                data = json.JSONDecoder().decode(content)
-                print_party_data(data, "PonPokoParty")
+    for type_ in test_types:
+        for curr_freq in test_frequencies:
+            for curr_sample in range(test_samples):
+                print(
+                    f"++++++++++ FREQUENCY {curr_freq} - SAMPLE {curr_sample} ++++++++++"
+                )
+                file_name = f"results/results_summaries-test-({curr_freq})-({type_})-({curr_sample}).json"
+                with open(file_name) as file:
+                    content = ''.join(file.readlines())
+                    data = json.JSONDecoder().decode(content)
+                    print_party_data(data, "PonPokoParty")
 
 
 if __name__ == "__main__":

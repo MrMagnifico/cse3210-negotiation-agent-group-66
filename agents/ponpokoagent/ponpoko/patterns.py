@@ -121,12 +121,15 @@ class Patterns:
             self._index = randint(0, len(self._patterns) - 1)
             return self._patterns[self._index]
         elif self._type == PatternGeneratorType.Opponent:
-            if self._opponent == "conceder":
+            if self._opponent == "hardliner":
                 self._index = randint(0, len(self._conceder_patterns) - 1)
                 return self._conceder_patterns[self._index]
-            elif self._opponent == "hardliner":
+            elif self._opponent == "conceder":
                 self._index = randint(0, len(self._hardliner_patterns) - 1)
                 return self._hardliner_patterns[self._index]
+            else:
+                self._index = randint(0, len(self._patterns) - 1)
+                return self._patterns[self._index]
         elif self._type == PatternGeneratorType.Random:
             one = (uniform(0.01, 0.15), randint(0, 20))
             two = (uniform(0.01, 0.35), randint(0, 80))
