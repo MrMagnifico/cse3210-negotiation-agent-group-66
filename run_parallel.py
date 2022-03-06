@@ -73,7 +73,7 @@ def save_as_image(title, values, file_):
     plt.close()
 
 
-def run_sessions(domain, opponent):
+def run_sessions(domain, opponent, ponpoko_params, num_samples):
     # Create settings and generate results
     agents = ["agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty", opponent]
     profiles = [
@@ -83,7 +83,7 @@ def run_sessions(domain, opponent):
         "agents": agents,
         "profiles": profiles,
         "deadline_rounds": 200,
-        "ponpoko_params": PARAMS
+        "ponpoko_params": ponpoko_params
     }
 
     # Create results dir
@@ -91,7 +91,7 @@ def run_sessions(domain, opponent):
     res_dir = f"results/{domain}/AgentGrug_{agent_name}"
     Path(res_dir).mkdir(parents=True, exist_ok=True)
 
-    for run in range(SAMPLES):
+    for run in range(num_samples):
         results_trace, results_summary = run_session(settings)
 
         # Write raw results and plot
@@ -102,7 +102,7 @@ def run_sessions(domain, opponent):
             f.write(json.dumps(results_summary, indent=2))
 
 
-def analyse_results():
+def analyse_results(domains, opponents):
     for domain in domains:
         for opponent in opponents:
             agent_name = opponent.split(".")[-1]
@@ -218,7 +218,6 @@ if __name__ == "__main__":
     SAMPLES = args.samples
 
     domains = ["domain0" + x for x in args.domains]
-    samples = args.samples
     opponents = [
         agent for agent in AGENTS if agent.split(".")[-1] in args.agents
     ]
@@ -236,10 +235,12 @@ if __name__ == "__main__":
     process_list = []
     for domain in domains:
         for opponent in opponents:
-            run_process = Process(target=run_sessions, args=(domain, opponent))
+            run_process = Process(
+                target=run_sessions,
+                args=(domain, opponent, PARAMS, SAMPLES))
             run_process.start()
             process_list.append(run_process)
     for process in process_list:
         process.join()
 
-    analyse_results()
+    analyse_results(domains, opponents)
