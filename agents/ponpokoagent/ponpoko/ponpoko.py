@@ -55,7 +55,11 @@ class PonPokoParty(DefaultParty):
         self._receivedBids = []
         self._OPPONENT_EPSILON_HIGHER = 0.25
         self._OPPONENT_EPSILON_LOWER = 0.1
-        self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0, "neutral": 0}
+        self._moveCounts: Dict[str, int] = {
+            "conceder": 0,
+            "hardliner": 0,
+            "neutral": 0
+        }
         self._opponentModeled = False
 
     # Override
@@ -131,8 +135,10 @@ class PonPokoParty(DefaultParty):
             self._pattern_change_count = self._PATTERN_CHANGE_DELAY
         else:
             self._pattern_change_count -= 1
-        if ((self._OPPONENT_EPSILON_HIGHER != -1 or self._OPPONENT_EPSILON_LOWER != -1) and
-            self._utility_generator._type == PatternGeneratorType.Opponent):
+        if ((self._OPPONENT_EPSILON_HIGHER != -1
+             or self._OPPONENT_EPSILON_LOWER != -1)
+                and self._utility_generator._type
+                == PatternGeneratorType.Opponent):
             self._updateMoves()
 
         if self._isGood(self._lastReceivedBid):
@@ -157,9 +163,10 @@ class PonPokoParty(DefaultParty):
     def _getBid(self):
         allBids = AllBidsList(self._profile.getProfile().getDomain())
         candidate_found = False
-        if ((self._OPPONENT_EPSILON_HIGHER != -1 or self._OPPONENT_EPSILON_LOWER != -1) and
-            self._utility_generator._type == PatternGeneratorType.Opponent and
-            self._getTimeFraction() >= 0.3):
+        if ((self._OPPONENT_EPSILON_HIGHER != -1
+             or self._OPPONENT_EPSILON_LOWER != -1) and
+                self._utility_generator._type == PatternGeneratorType.Opponent
+                and self._getTimeFraction() >= 0.3):
             self._utility_generator._opponent = max(self._moveCounts,
                                                     key=self._moveCounts.get)
             self._utility_func = next(self._utility_generator)
@@ -176,7 +183,9 @@ class PonPokoParty(DefaultParty):
             # Update bids close to median utility
             current_bid_diff = abs(self._profile.getProfile().getUtility(bid)
                                    - Decimal(median))
-            if isclose(current_bid_diff,0, abs_tol=self._FALLBACK_BID_UTIL_RANGE):
+            if isclose(current_bid_diff,
+                       0,
+                       abs_tol=self._FALLBACK_BID_UTIL_RANGE):
                 close_to_median.append(bid)
 
             if self._isGood(bid):
@@ -191,6 +200,7 @@ class PonPokoParty(DefaultParty):
         return bid
 
     def _updateMoves(self):
+
         def _util(bid):
             return self._profile.getProfile().getUtility(bid)
 
@@ -199,8 +209,8 @@ class PonPokoParty(DefaultParty):
             return
 
         self._receivedBids.append(self._lastReceivedBid)
-        if (_util(self._lastReceivedBid)
-                - _util(self._receivedBids[-1])) > self._OPPONENT_EPSILON_HIGHER:
+        if (_util(self._lastReceivedBid) - _util(
+                self._receivedBids[-1])) > self._OPPONENT_EPSILON_HIGHER:
             self._moveCounts["conceder"] += 1
         elif (_util(self._lastReceivedBid)
               - _util(self._receivedBids[-1])) < self._OPPONENT_EPSILON_LOWER:
@@ -236,34 +246,38 @@ class PonPokoParty(DefaultParty):
         return elapsed_time
 
     def _processParameters(self):
-        """
-        Save any passed parameter values.
-        """
+        """Save any passed parameter values."""
         if self._settings.getParameters().containsKey("generatorType"):
-                var = int(self._settings.getParameters().get("generatorType"))
-                self._utility_generator._type = PatternGeneratorType(var)
-                self.getReporter().log(logging.INFO, f"Generator type {var}")
+            var = int(self._settings.getParameters().get("generatorType"))
+            self._utility_generator._type = PatternGeneratorType(var)
+            self.getReporter().log(logging.INFO, f"Generator type {var}")
+            self._utility_func = next(self._utility_generator)
+
         if self._settings.getParameters().containsKey("patternChangeDelay"):
             self._PATTERN_CHANGE_DELAY = int(
                 self._settings.getParameters().get("patternChangeDelay"))
             self.getReporter().log(
                 logging.INFO,
-                f"Pattern change frequency set to {self._PATTERN_CHANGE_DELAY}")
+                f"Pattern change frequency set to {self._PATTERN_CHANGE_DELAY}"
+            )
         if self._settings.getParameters().containsKey("fallbackBidUtilRange"):
             self._FALLBACK_BID_UTIL_RANGE = float(
                 self._settings.getParameters().get("fallbackBidUtilRange"))
             self.getReporter().log(
                 logging.INFO,
-                f"Fallback bid utility range set to {self._FALLBACK_BID_UTIL_RANGE}")
+                f"Fallback bid utility range set to {self._FALLBACK_BID_UTIL_RANGE}"
+            )
         if self._settings.getParameters().containsKey("opponentEpsilonLower"):
             self._OPPONENT_EPSILON_LOWER = float(
                 self._settings.getParameters().get("opponentEpsilonLower"))
             self.getReporter().log(
                 logging.INFO,
-                f"Opponent epsilon lower bound set to {self._OPPONENT_EPSILON_LOWER}")
+                f"Opponent epsilon lower bound set to {self._OPPONENT_EPSILON_LOWER}"
+            )
         if self._settings.getParameters().containsKey("opponentEpsilonHigher"):
             self._OPPONENT_EPSILON_HIGHER = float(
                 self._settings.getParameters().get("opponentEpsilonHigher"))
             self.getReporter().log(
                 logging.INFO,
-                f"Opponent epsilon upper bound set to {self._OPPONENT_EPSILON_HIGHER}")
+                f"Opponent epsilon upper bound set to {self._OPPONENT_EPSILON_HIGHER}"
+            )

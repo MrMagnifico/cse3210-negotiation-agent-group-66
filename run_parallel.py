@@ -17,7 +17,7 @@ TYPES = {
     "opponent": 2,
     "random": 3,
     "mutation": 4,
-    "operation": 5
+    "generation": 5
 }
 
 DOMAINS = [
@@ -43,7 +43,7 @@ PARAMS = {
     "generatorType": 1,
     "fallbackBidUtilRange": 0.05,
     "opponentEpsilonHigher": 0.25,
-    "opponentEpsilonLower" : 0.1
+    "opponentEpsilonLower": 0.1
 }
 
 SAMPLES = 5
@@ -52,6 +52,7 @@ parser = argparse.ArgumentParser(description="Generate metrics for the agent")
 
 
 def save_as_image(title, values, file_):
+
     def _plot_norm(name, s):
         mu = s['mean']
         sigma = s['stdev']
@@ -157,13 +158,13 @@ def analyse_results(domains, opponents):
                 save_as_image(f"{agent_name} - {domain}", summary,
                               f"{res_dir}/RESULTS_SUMMARY.png")
 
+
 def parser_init():
-    parser.add_argument(
-        "--samples",
-        metavar='N',
-        type=int,
-        help="Number of samples",
-        default=5)
+    parser.add_argument("--samples",
+                        metavar='N',
+                        type=int,
+                        help="Number of samples",
+                        default=5)
     parser.add_argument(
         "--frequency",
         metavar='M',
@@ -175,46 +176,42 @@ def parser_init():
         metavar='X.X',
         type=float,
         help="Distance from utility range media for fallback bid",
-        default=0.05
-    )
+        default=0.05)
     parser.add_argument(
         "--type",
         choices=['standard', 'opponent', 'random', 'mutation', 'generation'],
         help="PonPokoGeneration type to use",
         default='standard')
-    parser.add_argument(
-        "--domains",
-        nargs='*',
-        help="List of domains to use",
-        default=['0', '1'])
+    parser.add_argument("--domains",
+                        nargs='*',
+                        help="List of domains to use",
+                        default=['0', '1'])
     parser.add_argument(
         "--agents",
         nargs='*',
         help="List of agents to use",
         default=['BoulwareAgent', 'PonPokoParty', 'ConcederAgent'])
-    parser.add_argument(
-        '--matplotlib',
-        action='store_true',
-        help="Whether to generate an image")
+    parser.add_argument('--matplotlib',
+                        action='store_true',
+                        help="Whether to generate an image")
     parser.add_argument(
         "--opponent-epsilon-higher",
         metavar='Y.Y',
         type=float,
         help="Inter-bid change to classify opponent as conceder or hardliner",
-        default=0.25
-    )
+        default=0.25)
     parser.add_argument(
         "--opponent-epsilon-lower",
         metavar='Y.Y',
         type=float,
         help="Inter-bid change to classify opponent as conceder or hardliner",
-        default=0.1
-    )
+        default=0.1)
+
 
 if __name__ == "__main__":
     parser_init()
     args = parser.parse_args()
-    
+
     SAMPLES = args.samples
 
     domains = ["domain0" + x for x in args.domains]
@@ -235,9 +232,8 @@ if __name__ == "__main__":
     process_list = []
     for domain in domains:
         for opponent in opponents:
-            run_process = Process(
-                target=run_sessions,
-                args=(domain, opponent, PARAMS, SAMPLES))
+            run_process = Process(target=run_sessions,
+                                  args=(domain, opponent, PARAMS, SAMPLES))
             run_process.start()
             process_list.append(run_process)
     for process in process_list:
