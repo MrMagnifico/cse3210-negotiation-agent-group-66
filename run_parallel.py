@@ -42,7 +42,8 @@ PARAMS = {
     "patternChangeDelay": -1,
     "generatorType": 1,
     "fallbackBidUtilRange": 0.05,
-    "opponentEpsilon": 0.25
+    "opponentEpsilonHigher": 0.25,
+    "opponentEpsilonLower" : 0.1
 }
 
 SAMPLES = 5
@@ -196,11 +197,18 @@ def parser_init():
         action='store_true',
         help="Whether to generate an image")
     parser.add_argument(
-        "--opponent-epsilon",
+        "--opponent-epsilon-higher",
         metavar='Y.Y',
         type=float,
         help="Inter-bid change to classify opponent as conceder or hardliner",
         default=0.25
+    )
+    parser.add_argument(
+        "--opponent-epsilon-lower",
+        metavar='Y.Y',
+        type=float,
+        help="Inter-bid change to classify opponent as conceder or hardliner",
+        default=0.1
     )
 
 if __name__ == "__main__":
@@ -218,7 +226,8 @@ if __name__ == "__main__":
         "patternChangeDelay": args.frequency,
         "generatorType": TYPES[args.type],
         "fallbackBidUtilRange": args.fallback_tol,
-        "opponentEpsilon": args.opponent_epsilon
+        "opponentEpsilonHigher": args.opponent_epsilon_higher,
+        "opponentEpsilonLower": args.opponent_epsilon_lower
     }
     PARAMS = ponpoko_params
 
