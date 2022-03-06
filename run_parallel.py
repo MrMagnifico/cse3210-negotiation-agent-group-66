@@ -1,7 +1,6 @@
 import argparse
 import json
 import statistics
-import sys
 from multiprocessing import Process
 from pathlib import Path
 
@@ -39,16 +38,20 @@ AGENTS = [
     "agents.ponpokoagent.ponpoko.ponpoko.PonPokoParty"
 ]
 
-PARAMS = {"patternChangeFrequency": -1}
+PARAMS = {
+    "patternChangeFrequency": -1,
+    "generatorType": 1 
+}
 
-SAMPLES = 10
+SAMPLES = 5
 
 
 def save_as_image(title, values, file_):
-    x = np.linspace(0, 1, 1000)
-
     def _plot_norm(name, s):
-        y = norm.pdf(x, s['mean'], s['stdev'])
+        mu = s['mean']
+        sigma = s['stdev']
+        x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+        y = norm.pdf(x, mu, sigma)
         plt.plot(x, y, label=name)
 
     for name, items in values.items():
@@ -56,8 +59,8 @@ def save_as_image(title, values, file_):
             _plot_norm(name, items)
 
     plt.title(title)
-    plt.xlabel('x')
-    plt.ylabel('Normal distributions')
+    plt.xlabel('Value')
+    plt.ylabel('Probability Density')
     plt.legend()
     plt.savefig(file_)
     plt.clf()
@@ -75,7 +78,7 @@ def run_sessions(domain, opponent):
         "agents": agents,
         "profiles": profiles,
         "deadline_rounds": 200,
-        "ponpoko_params": ponpoko_params
+        "ponpoko_params": PARAMS
     }
 
     # Create results dir
@@ -83,7 +86,7 @@ def run_sessions(domain, opponent):
     res_dir = f"results/{domain}/AgentGrug_{agent_name}"
     Path(res_dir).mkdir(parents=True, exist_ok=True)
 
-    for run in range(samples):
+    for run in range(SAMPLES):
         results_trace, results_summary = run_session(settings)
 
         # Write raw results and plot
@@ -194,6 +197,8 @@ if __name__ == "__main__":
         "patternChangeFrequency": args.frequency,
         "generatorType": TYPES[args.type]
     }
+    PARAMS = ponpoko_params
+
     MATPLOTLIB = args.matplotlib
 
     process_list = []
