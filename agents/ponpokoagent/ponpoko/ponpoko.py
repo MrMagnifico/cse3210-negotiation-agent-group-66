@@ -53,7 +53,7 @@ class PonPokoParty(DefaultParty):
         self._utility_func = next(self._utility_generator)
         self._PATTERN_CHANGE_DELAY = -1
         self._receivedBids = []
-        self._OPPONENT_EPSILON = -1
+        self._OPPONENT_EPSILON = 0.25
         self._moveCounts: Dict[str, int] = {"conceder": 0, "hardliner": 0}
         self._opponentModeled = False
 
@@ -109,8 +109,7 @@ class PonPokoParty(DefaultParty):
     # Override
     def getDescription(self) -> str:
         return """
-        Offers random bids until a bid with sufficient utility (> 0.7) is offered.
-        Parameters minPower and maxPower can be used to control voting behaviour.
+        PonPokoAgent with a few tricks up its sleeve. See accompanying report.
         """
 
     # Override
@@ -131,8 +130,10 @@ class PonPokoParty(DefaultParty):
             self._pattern_change_count = self._PATTERN_CHANGE_DELAY
         else:
             self._pattern_change_count -= 1
-        if self._OPPONENT_EPSILON != -1:
-            self._updateMoves(0.25)
+
+        if self._utility_generator._type == PatternGeneratorType.Opponent:
+            self._updateMoves()
+
         if self._isGood(self._lastReceivedBid):
             action = Accept(self._me, self._lastReceivedBid)
         else:
@@ -155,10 +156,13 @@ class PonPokoParty(DefaultParty):
     def _getBid(self):
         allBids = AllBidsList(self._profile.getProfile().getDomain())
         candidate_found = False
-        if self._OPPONENT_EPSILON != -1 and self._getTimeFraction() >= 0.3:
-            self._utility_generator._opponent = max(self._moveCounts,
-                                                    key=self._moveCounts.get)
+
+        if (self._utility_generator._type == PatternGeneratorType.Opponent and
+            self._getTimeFraction() >= 0.3):
+            self._utility_generator._opponent = max(
+                self._moveCounts, key=self._moveCounts.get)
             self._utility_func = next(self._utility_generator)
+
         high, low = self._utility_func(self._getTimeFraction(), 1.0)
         self.getReporter().log(logging.INFO, f"Utility range [{low}, {high}]")
 
@@ -185,7 +189,7 @@ class PonPokoParty(DefaultParty):
                 pass
         return bid
 
-    def _updateMoves(self, epsilon):
+    def _updateMoves(self):
         def _util(bid):
             return self._profile.getProfile().getUtility(bid)
 
@@ -194,10 +198,10 @@ class PonPokoParty(DefaultParty):
             return
 
         if (_util(self._lastReceivedBid)
-                - _util(self._receivedBids[-1])) > epsilon:
+                - _util(self._receivedBids[-1])) > self._OPPONENT_EPSILON:
             self._moveCounts["conceder"] += 1
         elif (_util(self._lastReceivedBid)
-              - _util(self._receivedBids[-1])) < epsilon:
+              - _util(self._receivedBids[-1])) < self._OPPONENT_EPSILON:
             self._moveCounts["hardliner"] += 1
 
     def _vote(self, voting: Voting) -> Votes:
@@ -247,3 +251,9 @@ class PonPokoParty(DefaultParty):
             self.getReporter().log(
                 logging.INFO,
                 f"Fallback bid utility range set to {self._FALLBACK_BID_UTIL_RANGE}")
+        if self._settings.getParameters().containsKey("opponentEpsilon"):
+            self._OPPONENT_EPSILON = float(
+                self._settings.getParameters().get("opponentEpsilon"))
+            self.getReporter().log(
+                logging.INFO,
+                f"Opponent epsilon set to {self._OPPONENT_EPSILON}")

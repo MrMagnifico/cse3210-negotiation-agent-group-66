@@ -41,10 +41,13 @@ AGENTS = [
 PARAMS = {
     "patternChangeDelay": -1,
     "generatorType": 1,
-    "fallbackBidUtilRange": 0.05
+    "fallbackBidUtilRange": 0.05,
+    "opponentEpsilon": 0.25
 }
 
 SAMPLES = 5
+
+parser = argparse.ArgumentParser(description="Generate metrics for the agent")
 
 
 def save_as_image(title, values, file_):
@@ -153,15 +156,13 @@ def analyse_results():
                 save_as_image(f"{agent_name} - {domain}", summary,
                               f"{res_dir}/RESULTS_SUMMARY.png")
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate metrics for the agent")
-    parser.add_argument("--samples",
-                        metavar='N',
-                        type=int,
-                        help="Number of samples",
-                        default=5)
+def parser_init():
+    parser.add_argument(
+        "--samples",
+        metavar='N',
+        type=int,
+        help="Number of samples",
+        default=5)
     parser.add_argument(
         "--frequency",
         metavar='M',
@@ -180,20 +181,32 @@ if __name__ == "__main__":
         choices=['standard', 'opponent', 'random', 'mutation', 'generation'],
         help="PonPokoGeneration type to use",
         default='standard')
-    parser.add_argument("--domains",
-                        nargs='*',
-                        help="List of domains to use",
-                        default=['0', '1'])
+    parser.add_argument(
+        "--domains",
+        nargs='*',
+        help="List of domains to use",
+        default=['0', '1'])
     parser.add_argument(
         "--agents",
         nargs='*',
         help="List of agents to use",
         default=['BoulwareAgent', 'PonPokoParty', 'ConcederAgent'])
-    parser.add_argument('--matplotlib',
-                        action='store_true',
-                        help="Whether to generate an image")
+    parser.add_argument(
+        '--matplotlib',
+        action='store_true',
+        help="Whether to generate an image")
+    parser.add_argument(
+        "--opponent-epsilon",
+        metavar='Y.Y',
+        type=float,
+        help="Inter-bid change to classify opponent as conceder or hardliner",
+        default=0.25
+    )
 
+if __name__ == "__main__":
+    parser_init()
     args = parser.parse_args()
+    
     SAMPLES = args.samples
 
     domains = ["domain0" + x for x in args.domains]
@@ -204,8 +217,8 @@ if __name__ == "__main__":
     ponpoko_params = {
         "patternChangeDelay": args.frequency,
         "generatorType": TYPES[args.type],
-        "fallbackBidUtilRange": args.fallback_tol
-
+        "fallbackBidUtilRange": args.fallback_tol,
+        "opponentEpsilon": args.opponent_epsilon
     }
     PARAMS = ponpoko_params
 
