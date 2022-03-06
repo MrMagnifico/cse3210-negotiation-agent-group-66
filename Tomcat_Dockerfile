@@ -2,7 +2,7 @@ FROM python:3.9-rc-buster
 
 WORKDIR /usr/src/party
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --trusted-host tracinsy.ewi.tudelft.nl -r requirements.txt
 COPY . .
 
 WORKDIR /usr/src/party/agents/randomp

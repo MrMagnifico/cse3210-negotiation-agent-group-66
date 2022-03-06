@@ -1,3 +1,5 @@
 dist/
 .git
 .bin
+results/
+*.log

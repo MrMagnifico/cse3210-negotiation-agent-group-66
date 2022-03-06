@@ -5,7 +5,12 @@ the 2017 edition of the Automated Negotiating Agent Competition held
 by the Delft University of Technology. It has been made as the first
 assignment of the CSE3210 Collaborative Artificial Intelligence
 elective. It has been written by Valentijn van de Beek, William
-Narchi, and Emirhan Demir.
+Narchi, and Emirhan Demir. This guide assumes that you are using
+the version hosted on github.com, otherwise the normal installation
+instructions for Python based agents apply. For the Tomcat server
+the same principles mostly apply, but the settings need to be set
+manually. These are described below but are not tested due to a bug
+with the SSL certificate used in the tomcat server.
 
 ## Resources
 
@@ -39,7 +44,7 @@ Narchi, and Emirhan Demir.
 ## Quickstart
 - Create a python environment: `python -m venv .py`
 - Load the python enviornment: `source .py/bin/activate`
-- Install the packages: `pip install -r requirements.txt`
+- Install the packages: `pip install --trusted-host tracinsy.ewi.tudelft.nl -r requirements.txt`
 - Run the default tournaments: `python run_parallel.py`
 
 When the program finishes running you can find the output in
@@ -61,11 +66,15 @@ the `-h` switch, but a more full explanation is given below.
   are aggregated together at the end and are used to calculate
   interesting statistical data about the run.
 - `frequency`: Number of turns before the agent switches to a
-  different pattern
+  different pattern. Corresponds to the `patternChangeDelay` setting
+  parameter.
 - `fallback-tol`: Defines the maximum difference between the chosen
-  bid compared the median of all the bids
+  bid compared the median of all the bids. Corresponds to the
+  `fallbackBidUtilRange` setting parameter.
 - `types`: Allows the user to change between the different operating
-  modes of PonPoko. They are described in detail below.
+  modes of PonPoko. They are described in detail below. This value
+  is the same as the `generatorType` setting parameter and is a
+  number between 1 and 5.
 - `domains`: A list of integers between 0 and 9 which indicate which
   domains the tournaments are run on.
 - `agents`: List of agents that are used as opponents in the
@@ -73,9 +82,11 @@ the `-h` switch, but a more full explanation is given below.
 - `matplotlib`: Switch which generates a figure with the normal
   distribution defined by the output the aggregated samples.
 - `opponent-epsilon-higher`: Change required before the opponent is
-  classified as a hardliner.
+  classified as a hardliner. Called `opponentEpsilonLower` in the
+  settings.
 - `opponent-epsiolon-lower`: Change requried before the opponent is
-  classified as a conceder.
+  classified as a conceder. Corresponds to the `opponentEpsilonLower`
+  setting parameter.
 
 ### Agents available
 These are the agents which are available to be used in the
