@@ -29,16 +29,13 @@ tournament_settings = {
     ],
     "deadline_rounds":
     200,
-    "ponpoko_params": {
-        "patternChangeFrequency": -1
-    },
-    "no_warning":
-    1
+    "ponpoko_params": {},
+    "no_warning": 1
 }
 
 
 def run_test_tournament(tournament_settings, test_freq, gen_type, test_sample):
-    tournament_settings["ponpoko_params"]["patternChangeFrequency"] = test_freq
+    tournament_settings["ponpoko_params"]["patternChangeDelay"] = test_freq
     tournament_settings["ponpoko_params"]["generatorType"] = gen_type
 
     # run a session and obtain results in dictionaries
