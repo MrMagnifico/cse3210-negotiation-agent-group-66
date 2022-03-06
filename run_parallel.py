@@ -39,8 +39,9 @@ AGENTS = [
 ]
 
 PARAMS = {
-    "patternChangeFrequency": -1,
-    "generatorType": 1 
+    "patternChangeDelay": -1,
+    "generatorType": 1,
+    "fallbackBidUtilRange": 0.05
 }
 
 SAMPLES = 5
@@ -50,7 +51,7 @@ def save_as_image(title, values, file_):
     def _plot_norm(name, s):
         mu = s['mean']
         sigma = s['stdev']
-        x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+        x = np.linspace(0.0, 1.0, 100)
         y = norm.pdf(x, mu, sigma)
         plt.plot(x, y, label=name)
 
@@ -168,6 +169,13 @@ if __name__ == "__main__":
         help="Rate of change of the pattern, -1 for every session",
         default=-1)
     parser.add_argument(
+        "--fallback-tol",
+        metavar='X.X',
+        type=float,
+        help="Distance from utility range media for fallback bid",
+        default=0.05
+    )
+    parser.add_argument(
         "--type",
         choices=['standard', 'opponent', 'random', 'mutation', 'generation'],
         help="PonPokoGeneration type to use",
@@ -194,8 +202,10 @@ if __name__ == "__main__":
         agent for agent in AGENTS if agent.split(".")[-1] in args.agents
     ]
     ponpoko_params = {
-        "patternChangeFrequency": args.frequency,
-        "generatorType": TYPES[args.type]
+        "patternChangeDelay": args.frequency,
+        "generatorType": TYPES[args.type],
+        "fallbackBidUtilRange": args.fallback_tol
+
     }
     PARAMS = ponpoko_params
 
